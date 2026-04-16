@@ -76,6 +76,87 @@
         .nav-login { font-size: 13px; font-weight: 300; color: var(--text-2); padding: 6px 12px; transition: color .12s; }
         .nav-login:hover { color: var(--blue); }
 
+        .nav-menu-btn {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            border: 1px solid var(--border-hi);
+            border-radius: 8px;
+            background: #fff;
+            color: var(--text);
+            transition: border-color .12s, background .12s, color .12s;
+        }
+        .nav-menu-btn:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-dim); }
+        .nav-menu-btn svg { width: 20px; height: 20px; }
+
+        .nav-drawer-backdrop {
+            position: fixed;
+            inset: 0;
+            z-index: 180;
+            background: rgba(13,17,23,0.38);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity .22s ease, visibility .22s;
+            pointer-events: none;
+        }
+        .nav-drawer-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            z-index: 190;
+            width: min(300px, 88vw);
+            height: 100%;
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(14px);
+            border-left: 1px solid var(--border);
+            box-shadow: -8px 0 32px rgba(0,0,0,0.08);
+            padding: 72px 20px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            overflow-y: auto;
+            transform: translateX(100%);
+            visibility: hidden;
+            pointer-events: none;
+            transition: transform .26s ease, visibility .26s;
+        }
+        .nav-drawer-head {
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--text-3);
+            margin: 14px 10px 8px;
+        }
+        .nav-drawer-panel .nav-link {
+            display: block;
+            padding: 12px 12px;
+            font-size: 14px;
+            border-radius: 8px;
+        }
+        .nav-drawer-panel .nav-btn,
+        .nav-drawer-panel .nav-login {
+            display: block;
+            text-align: center;
+            margin-top: 6px;
+            padding: 11px 14px;
+            border-radius: 8px;
+        }
+        .nav-drawer-panel .nav-login { border: 1px solid var(--border); background: #fff; }
+        body.nav-drawer-open .nav-drawer-backdrop {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+        body.nav-drawer-open .nav-drawer-panel {
+            transform: translateX(0);
+            visibility: visible;
+            pointer-events: auto;
+        }
+
         /* ─── HERO ─── */
         .hero {
             position: relative;
@@ -850,15 +931,9 @@
         }
 
         @media (max-width: 760px) {
-            .nav { height: auto; }
-            .nav-inner { flex-direction: column; align-items: flex-start; gap: 8px; padding: 8px 0; }
-            .nav-links {
-                width: 100%;
-                display: flex;
-                flex-wrap: nowrap;
-                overflow-x: auto;
-                padding-bottom: 2px;
-            }
+            .nav-inner { align-items: center; }
+            .nav-links-desktop { display: none !important; }
+            .nav-menu-btn { display: inline-flex; }
             .hero { padding: 64px 0 56px; }
             .hero-h1 { font-size: 34px; }
             .hero-sub { margin-bottom: 22px; }
@@ -905,7 +980,7 @@
         <a href="/" class="nav-brand">
             <img src="{{ asset('logo.svg') }}" alt="Velinex Cloud" class="nav-logo">
         </a>
-        <div class="nav-links">
+        <div class="nav-links nav-links-desktop">
             <a href="#services" class="nav-link">Services</a>
             <a href="#features" class="nav-link">Features</a>
             <a href="#how" class="nav-link">How it works</a>
@@ -917,8 +992,25 @@
                 <a href="{{ route('auth.register') }}" class="nav-btn">Get started</a>
             @endauth
         </div>
+        <button type="button" class="nav-menu-btn" id="nav-menu-open" aria-label="Open menu" aria-expanded="false" aria-controls="nav-drawer">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+        </button>
     </div>
 </nav>
+<div class="nav-drawer-backdrop" id="nav-drawer-backdrop" aria-hidden="true"></div>
+<aside class="nav-drawer-panel" id="nav-drawer" role="dialog" aria-modal="true" aria-label="Site menu" aria-hidden="true">
+    <div class="nav-drawer-head">Menu</div>
+    <a href="#services" class="nav-link">Services</a>
+    <a href="#features" class="nav-link">Features</a>
+    <a href="#how" class="nav-link">How it works</a>
+    <a href="#pricing" class="nav-link">Pricing</a>
+    @auth
+        <a href="{{ route('mail.dashboard') }}" class="nav-btn">Dashboard</a>
+    @else
+        <a href="{{ route('login') }}" class="nav-login">Sign in</a>
+        <a href="{{ route('auth.register') }}" class="nav-btn">Get started</a>
+    @endauth
+</aside>
 
 <!-- Hero -->
 <section class="hero">
@@ -1445,6 +1537,40 @@
         entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
     }, { threshold: 0.08 });
     document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+    (function () {
+        const mq = window.matchMedia('(max-width: 760px)');
+        const openBtn = document.getElementById('nav-menu-open');
+        const backdrop = document.getElementById('nav-drawer-backdrop');
+        const drawer = document.getElementById('nav-drawer');
+        if (!openBtn || !backdrop || !drawer) return;
+
+        function setOpen(open) {
+            document.body.classList.toggle('nav-drawer-open', open);
+            openBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+            backdrop.setAttribute('aria-hidden', open ? 'false' : 'true');
+            drawer.setAttribute('aria-hidden', open ? 'false' : 'true');
+            document.body.style.overflow = open ? 'hidden' : '';
+        }
+
+        function closeIfMobile() {
+            if (mq.matches) setOpen(false);
+        }
+
+        openBtn.addEventListener('click', () => setOpen(!document.body.classList.contains('nav-drawer-open')));
+        backdrop.addEventListener('click', closeIfMobile);
+        drawer.querySelectorAll('a').forEach(a => {
+            a.addEventListener('click', () => closeIfMobile());
+        });
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') closeIfMobile();
+        });
+        if (mq.addEventListener) {
+            mq.addEventListener('change', e => { if (!e.matches) setOpen(false); });
+        } else if (mq.addListener) {
+            mq.addListener(e => { if (!e.matches) setOpen(false); });
+        }
+    })();
 </script>
 </body>
 </html>
