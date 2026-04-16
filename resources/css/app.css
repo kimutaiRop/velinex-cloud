@@ -47,7 +47,7 @@ button { cursor: pointer; }
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-family: 'Figtree', system-ui, sans-serif;
   font-size: 14px;
   line-height: 1.55;
   min-height: 100vh;
@@ -98,7 +98,7 @@ body {
   width: 30px; height: 30px;
   background: var(--accent);
   color: #000;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: 'Figtree', sans-serif;
   font-weight: 800;
   font-size: 12px;
   letter-spacing: 0.04em;
@@ -111,7 +111,7 @@ body {
 .brand-text { line-height: 1.2; }
 
 .brand-name {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: 'Figtree', sans-serif;
   font-weight: 700;
   font-size: 14px;
   color: var(--text);
@@ -202,7 +202,7 @@ body {
   background: var(--accent-dim);
   border: 1px solid rgba(0, 229, 255, 0.2);
   color: var(--accent);
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: 'Figtree', sans-serif;
   font-weight: 700;
   font-size: 11px;
   display: flex; align-items: center; justify-content: center;
@@ -242,7 +242,7 @@ body {
   color: var(--text-muted);
   font-size: 12px;
   font-weight: 500;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: 'Figtree', sans-serif;
   transition: all 0.14s;
 }
 
@@ -298,7 +298,7 @@ body {
 }
 
 .topbar-title {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: 'Figtree', sans-serif;
   font-size: 15px;
   font-weight: 700;
   color: var(--text);
@@ -366,7 +366,7 @@ body {
   border-radius: 8px;
   font-size: 13px;
   font-weight: 500;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: 'Figtree', sans-serif;
   transition: all 0.14s;
   white-space: nowrap;
   border: none;
@@ -486,7 +486,7 @@ body {
 .stat-icon svg { width: 15px; height: 15px; }
 
 .stat-value {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: 'Figtree', sans-serif;
   font-size: 28px;
   font-weight: 700;
   line-height: 1;
@@ -511,7 +511,7 @@ body {
 }
 
 .section-title {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: 'Figtree', sans-serif;
   font-size: 14px;
   font-weight: 700;
   color: var(--text);
@@ -688,7 +688,7 @@ tbody td {
   transition: border-color 0.14s, box-shadow 0.14s;
 }
 
-.form-input::placeholder { color: var(--text-dim); font-family: 'Plus Jakarta Sans', sans-serif; }
+.form-input::placeholder { color: var(--text-dim); font-family: 'Figtree', sans-serif; }
 
 .form-input:focus {
   border-color: var(--accent);
@@ -714,7 +714,7 @@ tbody td {
 .empty-icon svg { width: 20px; height: 20px; }
 
 .empty-state h3 {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: 'Figtree', sans-serif;
   font-size: 15px;
   font-weight: 600;
   color: var(--text);
@@ -909,7 +909,7 @@ tbody td {
 }
 
 .auth-title {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: 'Figtree', sans-serif;
   font-size: 22px;
   font-weight: 700;
   color: var(--text);

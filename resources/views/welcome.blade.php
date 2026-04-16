@@ -3,807 +3,800 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Velinex Cloud — Enterprise Web & Email Hosting</title>
-    <meta name="description" content="Production-grade web hosting and business email infrastructure. Built for teams that demand reliability, security, and control.">
+    <title>Velinex Cloud — Web & Email Hosting for Business</title>
+    <meta name="description" content="Enterprise-grade web hosting and business email. Built for reliability, security, and scale.">
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=plus-jakarta-sans:300,400,500,600,700,800|jetbrains-mono:400,500&display=swap" rel="stylesheet">
+    <link href="https://fonts.bunny.net/css?family=figtree:300,400&display=swap" rel="stylesheet">
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     @endif
     <style>
-        /* ─── Landing-specific overrides & additions ─── */
         :root {
-            --bg:         #06080D;
-            --bg-surface: #0A0D18;
-            --bg-card:    #0F1320;
-            --bg-hover:   #141826;
-            --border:     rgba(255,255,255,0.055);
-            --border-hi:  rgba(255,255,255,0.11);
-            --accent:     #00E5FF;
-            --accent-dim: rgba(0,229,255,0.10);
-            --success:    #00E599;
-            --warning:    #FFB020;
-            --danger:     #FF4D6A;
-            --purple:     #A78BFA;
-            --text:       #D8E0EF;
-            --text-muted: #556070;
-            --text-dim:   #283040;
+            --bg:         #ffffff;
+            --bg-2:       #f7f8fa;
+            --bg-3:       #eef0f4;
+            --text:       #0e1117;
+            --text-2:     #4b5563;
+            --text-3:     #9ca3af;
+            --blue:       #1a6cf0;
+            --blue-dim:   rgba(26, 108, 240, 0.07);
+            --blue-mid:   rgba(26, 108, 240, 0.14);
+            --green:      #059669;
+            --green-dim:  rgba(5, 150, 105, 0.08);
+            --border:     rgba(0, 0, 0, 0.08);
+            --border-hi:  rgba(0, 0, 0, 0.13);
+            --shadow-sm:  0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
+            --shadow-md:  0 4px 16px rgba(0,0,0,0.08);
         }
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         html { -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
-        a { text-decoration: none; }
-        button { cursor: pointer; }
+        a { text-decoration: none; color: inherit; }
+        button { cursor: pointer; font-family: inherit; }
+        img { display: block; }
 
         body {
             background: var(--bg);
             color: var(--text);
-            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            font-family: 'Figtree', system-ui, sans-serif;
+            font-weight: 400;
+            font-size: 15px;
             line-height: 1.6;
-            overflow-x: hidden;
         }
 
-        /* ─── Background ─── */
-        .page-bg {
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        .page-bg::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-image: radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px);
-            background-size: 28px 28px;
-        }
-
-        .page-bg-glow-1 {
-            position: absolute;
-            top: -200px; left: -200px;
-            width: 800px; height: 800px;
-            background: radial-gradient(ellipse, rgba(0,229,255,0.05) 0%, transparent 65%);
-        }
-
-        .page-bg-glow-2 {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 1000px; height: 600px;
-            background: radial-gradient(ellipse, rgba(167,139,250,0.03) 0%, transparent 65%);
-        }
-
-        .page-bg-glow-3 {
-            position: absolute;
-            bottom: -200px; right: -200px;
-            width: 700px; height: 700px;
-            background: radial-gradient(ellipse, rgba(0,229,153,0.04) 0%, transparent 65%);
-        }
-
-        /* ─── Wrapper ─── */
         .wrap {
-            max-width: 1120px;
+            max-width: 1100px;
             margin: 0 auto;
-            padding: 0 32px;
-            position: relative;
-            z-index: 1;
+            padding: 0 28px;
         }
 
         /* ─── Nav ─── */
-        nav.site-nav {
-            position: fixed;
-            top: 0; left: 0; right: 0;
+        .nav {
+            position: sticky;
+            top: 0;
             z-index: 100;
-            height: 60px;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            height: 56px;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-inner {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 40px;
-            background: rgba(6, 8, 13, 0.85);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-bottom: 1px solid var(--border);
+            width: 100%;
         }
 
         .nav-brand {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
-        .nav-mark {
-            width: 28px; height: 28px;
-            background: var(--accent);
-            color: #000;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-weight: 800;
-            font-size: 11px;
+        .nav-logo {
+            width: 26px; height: 26px;
+            background: var(--blue);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 400;
+            letter-spacing: 0.06em;
             display: flex; align-items: center; justify-content: center;
-            border-radius: 6px;
-            box-shadow: 0 0 18px rgba(0,229,255,0.3);
+            border-radius: 5px;
         }
 
-        .nav-brand-name {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-weight: 700;
-            font-size: 15px;
+        .nav-name {
+            font-size: 14px;
+            font-weight: 400;
             color: var(--text);
+            letter-spacing: 0.01em;
         }
 
-        .nav-brand-sub {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 9px;
-            color: var(--accent);
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            display: block;
-            line-height: 1;
+        .nav-name span {
+            color: var(--text-2);
+            font-weight: 300;
         }
 
         .nav-links {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
         }
 
         .nav-link {
-            padding: 6px 14px;
-            border-radius: 7px;
+            padding: 5px 12px;
             font-size: 13px;
-            font-weight: 500;
-            color: var(--text-muted);
-            transition: all 0.14s;
+            font-weight: 300;
+            color: var(--text-2);
+            border-radius: 5px;
+            transition: color 0.12s, background 0.12s;
         }
 
-        .nav-link:hover {
-            color: var(--text);
-            background: var(--bg-hover);
+        .nav-link:hover { color: var(--text); background: var(--bg-2); }
+
+        .nav-btn {
+            padding: 6px 16px;
+            font-size: 13px;
+            font-weight: 400;
+            background: var(--blue);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            transition: background 0.12s, box-shadow 0.12s;
+            display: inline-block;
         }
 
-        .nav-cta {
-            background: var(--accent);
-            color: #000 !important;
-            font-weight: 600 !important;
-            box-shadow: 0 0 16px rgba(0,229,255,0.25);
+        .nav-btn:hover {
+            background: #1558cc;
+            box-shadow: 0 2px 8px rgba(26,108,240,0.28);
         }
 
-        .nav-cta:hover {
-            background: #33ECFF !important;
-            box-shadow: 0 0 26px rgba(0,229,255,0.4) !important;
-            transform: translateY(-1px);
+        .nav-login {
+            font-size: 13px;
+            font-weight: 300;
+            color: var(--text-2);
+            padding: 6px 12px;
+            transition: color 0.12s;
         }
+
+        .nav-login:hover { color: var(--blue); }
 
         /* ─── Hero ─── */
         .hero {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            padding-top: 80px;
+            padding: 80px 0 64px;
             position: relative;
             overflow: hidden;
         }
 
-        /* Scan-line effect */
-        .hero::after {
-            content: '';
+        .hero-bg {
             position: absolute;
-            top: -100%; left: 0; right: 0;
-            height: 200%;
-            background: repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 3px,
-                rgba(255,255,255,0.005) 3px,
-                rgba(255,255,255,0.005) 4px
-            );
-            pointer-events: none;
-            animation: scanlines 8s linear infinite;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 60% 50%, rgba(26,108,240,0.04) 0%, transparent 70%),
+                linear-gradient(180deg, #ffffff 0%, #f7f8fa 100%);
+            z-index: 0;
         }
 
-        @keyframes scanlines {
-            from { transform: translateY(0); }
-            to   { transform: translateY(50%); }
+        /* subtle grid */
+        .hero-bg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(0,0,0,0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,0,0,0.025) 1px, transparent 1px);
+            background-size: 40px 40px;
+            mask-image: radial-gradient(ellipse 70% 70% at 60% 40%, black 20%, transparent 80%);
         }
 
         .hero-inner {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 60px;
+            gap: 64px;
             align-items: center;
-            width: 100%;
+            position: relative;
+            z-index: 1;
         }
 
-        .hero-eyebrow {
+        .hero-badge {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            padding: 4px 12px 4px 8px;
-            background: var(--accent-dim);
-            border: 1px solid rgba(0,229,255,0.18);
+            gap: 6px;
+            padding: 3px 10px 3px 8px;
+            background: var(--blue-dim);
+            border: 1px solid var(--blue-mid);
             border-radius: 99px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 10px;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            color: var(--accent);
-            margin-bottom: 22px;
+            font-size: 11px;
+            font-weight: 400;
+            color: var(--blue);
+            margin-bottom: 20px;
+            letter-spacing: 0.02em;
         }
 
-        .hero-eyebrow-dot {
-            width: 6px; height: 6px;
-            background: var(--accent);
+        .hero-badge-dot {
+            width: 5px; height: 5px;
+            background: var(--blue);
             border-radius: 50%;
-            animation: pulse-dot 2s ease-in-out infinite;
+            animation: blink 2.5s ease-in-out infinite;
         }
 
-        @keyframes pulse-dot {
-            0%, 100% { opacity: 1; box-shadow: 0 0 4px var(--accent); }
-            50%       { opacity: 0.5; box-shadow: 0 0 10px var(--accent); }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0.35; }
         }
 
         .hero-h1 {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: clamp(36px, 5vw, 58px);
-            font-weight: 800;
-            line-height: 1.08;
+            font-size: 40px;
+            font-weight: 300;
+            line-height: 1.15;
             letter-spacing: -0.02em;
             color: var(--text);
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
-        .hero-h1 em {
-            font-style: normal;
-            color: var(--accent);
-            position: relative;
+        .hero-h1 strong {
+            font-weight: 400;
+            color: var(--blue);
         }
 
         .hero-sub {
-            font-size: 16px;
-            color: var(--text-muted);
+            font-size: 15px;
+            font-weight: 300;
+            color: var(--text-2);
             line-height: 1.65;
-            max-width: 440px;
-            margin-bottom: 36px;
+            max-width: 400px;
+            margin-bottom: 32px;
         }
 
         .hero-actions {
             display: flex;
             align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
+            gap: 10px;
         }
 
-        .btn-hero-primary {
+        .btn-primary {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            padding: 13px 24px;
-            background: var(--accent);
-            color: #000;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 14px;
-            font-weight: 700;
-            border-radius: 10px;
+            gap: 6px;
+            padding: 9px 20px;
+            background: var(--blue);
+            color: #fff;
+            font-size: 13px;
+            font-weight: 400;
             border: none;
-            box-shadow: 0 0 30px rgba(0,229,255,0.3);
-            transition: all 0.15s;
-            white-space: nowrap;
+            border-radius: 6px;
+            transition: background 0.13s, box-shadow 0.13s, transform 0.13s;
         }
 
-        .btn-hero-primary:hover {
-            background: #33ECFF;
-            box-shadow: 0 0 48px rgba(0,229,255,0.45);
-            transform: translateY(-2px);
+        .btn-primary:hover {
+            background: #1558cc;
+            box-shadow: 0 3px 12px rgba(26,108,240,0.32);
+            transform: translateY(-1px);
         }
 
-        .btn-hero-secondary {
+        .btn-primary svg { width: 13px; height: 13px; }
+
+        .btn-secondary {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            padding: 13px 24px;
+            gap: 6px;
+            padding: 9px 20px;
             background: transparent;
-            color: var(--text-muted);
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 14px;
-            font-weight: 500;
-            border-radius: 10px;
+            color: var(--text-2);
+            font-size: 13px;
+            font-weight: 300;
             border: 1px solid var(--border-hi);
-            transition: all 0.15s;
-            white-space: nowrap;
+            border-radius: 6px;
+            transition: border-color 0.13s, color 0.13s, background 0.13s;
         }
 
-        .btn-hero-secondary:hover {
-            color: var(--text);
-            border-color: var(--accent);
-            background: var(--accent-dim);
+        .btn-secondary:hover {
+            border-color: var(--blue);
+            color: var(--blue);
+            background: var(--blue-dim);
         }
 
-        /* Hero visual */
+        /* Hero visual — product card mockup */
         .hero-visual {
             position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
-        .server-diagram {
-            position: relative;
-            width: 100%;
-            max-width: 460px;
-        }
-
-        .server-unit {
-            background: var(--bg-card);
-            border: 1px solid var(--border-hi);
-            border-radius: 12px;
-            padding: 14px 18px;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            transition: border-color 0.2s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .server-unit::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--unit-color, var(--accent)), transparent);
-            opacity: 0.4;
-        }
-
-        .server-unit:hover { border-color: var(--border-hi); }
-
-        .server-lights {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .s-light {
-            width: 6px; height: 6px;
-            border-radius: 50%;
-        }
-
-        .s-light.on  { background: var(--success); box-shadow: 0 0 6px var(--success); animation: blink 3s ease-in-out infinite; }
-        .s-light.mid { background: var(--warning); box-shadow: 0 0 6px var(--warning); animation: blink 4.5s ease-in-out infinite; }
-        .s-light.off { background: var(--text-dim); }
-
-        @keyframes blink {
-            0%, 95%, 100% { opacity: 1; }
-            97% { opacity: 0.2; }
-        }
-
-        .server-bars {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .server-bar-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .server-bar-label {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 9px;
-            color: var(--text-muted);
-            letter-spacing: 0.1em;
-            width: 32px;
-            flex-shrink: 0;
-        }
-
-        .server-bar-track {
-            flex: 1;
-            height: 4px;
-            background: var(--bg-hover);
-            border-radius: 2px;
-            overflow: hidden;
-        }
-
-        .server-bar-fill {
-            height: 100%;
-            border-radius: 2px;
-            background: var(--fill-color, var(--accent));
-        }
-
-        .server-tag {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 10px;
-            padding: 2px 8px;
-            border-radius: 4px;
-            flex-shrink: 0;
-        }
-
-        .server-title {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 12px;
-            font-weight: 700;
-            color: var(--text);
-            flex: 1;
-        }
-
-        .diagram-uptime {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 16px;
-            background: rgba(0, 229, 153, 0.06);
-            border: 1px solid rgba(0, 229, 153, 0.15);
+        .product-card {
+            background: #fff;
+            border: 1px solid var(--border);
             border-radius: 10px;
-            margin-bottom: 10px;
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
         }
 
-        .uptime-val {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-weight: 800;
-            font-size: 20px;
-            color: var(--success);
-        }
-
-        .uptime-label {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 9px;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            color: var(--text-muted);
-        }
-
-        /* ─── Metrics strip ─── */
-        .metrics-strip {
-            padding: 28px 0;
-            border-top: 1px solid var(--border);
+        .pc-topbar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
             border-bottom: 1px solid var(--border);
-            margin: 80px 0;
-            position: relative;
-            z-index: 1;
+            background: var(--bg-2);
         }
 
-        .metrics-inner {
+        .pc-dots { display: flex; gap: 5px; }
+        .pc-dot { width: 9px; height: 9px; border-radius: 50%; }
+
+        .pc-title {
+            font-size: 11px;
+            font-weight: 300;
+            color: var(--text-3);
+            font-family: 'Figtree', sans-serif;
+            letter-spacing: 0.03em;
+        }
+
+        .pc-body { padding: 16px; }
+
+        .pc-stat-row {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 0;
-        }
-
-        .metric-item {
-            text-align: center;
-            border-right: 1px solid var(--border);
-            padding: 0 20px;
-        }
-
-        .metric-item:last-child { border-right: none; }
-
-        .metric-val {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 32px;
-            font-weight: 800;
-            color: var(--text);
-            line-height: 1;
-            margin-bottom: 6px;
-        }
-
-        .metric-val span { color: var(--accent); }
-
-        .metric-desc {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 9.5px;
-            letter-spacing: 0.18em;
-            text-transform: uppercase;
-            color: var(--text-muted);
-        }
-
-        /* ─── Section shared styles ─── */
-        section { position: relative; z-index: 1; }
-
-        .section-eyebrow {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 9.5px;
-            letter-spacing: 0.24em;
-            text-transform: uppercase;
-            color: var(--accent);
-            margin-bottom: 12px;
-        }
-
-        .section-h2 {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: clamp(28px, 3.5vw, 42px);
-            font-weight: 800;
-            letter-spacing: -0.02em;
-            color: var(--text);
-            line-height: 1.1;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
             margin-bottom: 14px;
         }
 
+        .pc-stat {
+            background: var(--bg-2);
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            padding: 10px 12px;
+        }
+
+        .pc-stat-val {
+            font-size: 18px;
+            font-weight: 300;
+            color: var(--text);
+            line-height: 1;
+            margin-bottom: 3px;
+        }
+
+        .pc-stat-lbl {
+            font-size: 10px;
+            font-weight: 300;
+            color: var(--text-3);
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .pc-table-head {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 6px;
+            padding: 6px 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .pc-th {
+            font-size: 9.5px;
+            font-weight: 300;
+            color: var(--text-3);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .pc-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 6px;
+            padding: 8px 8px;
+            border-bottom: 1px solid var(--border);
+            align-items: center;
+            transition: background 0.1s;
+        }
+
+        .pc-row:last-child { border-bottom: none; }
+        .pc-row:hover { background: var(--bg-2); }
+
+        .pc-domain {
+            font-size: 12px;
+            font-weight: 400;
+            color: var(--text);
+            font-family: 'Courier New', monospace;
+        }
+
+        .pc-cell {
+            font-size: 11px;
+            font-weight: 300;
+            color: var(--text-2);
+        }
+
+        .pc-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 7px;
+            border-radius: 99px;
+            font-size: 9.5px;
+            font-weight: 400;
+        }
+
+        .pc-badge-green {
+            background: var(--green-dim);
+            color: var(--green);
+        }
+
+        .pc-badge-amber {
+            background: rgba(245,158,11,0.08);
+            color: #d97706;
+        }
+
+        .pc-badge-dot {
+            width: 4px; height: 4px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        /* floating accent card */
+        .pc-float {
+            position: absolute;
+            bottom: -16px;
+            right: -20px;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px 16px;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            white-space: nowrap;
+        }
+
+        .pc-float-icon {
+            width: 30px; height: 30px;
+            background: var(--green-dim);
+            border-radius: 7px;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--green);
+            flex-shrink: 0;
+        }
+
+        .pc-float-icon svg { width: 14px; height: 14px; }
+        .pc-float-val { font-size: 15px; font-weight: 300; color: var(--text); }
+        .pc-float-lbl { font-size: 10px; font-weight: 300; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; }
+
+        /* ─── Metrics bar ─── */
+        .metrics {
+            padding: 32px 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .metric {
+            text-align: center;
+            padding: 0 16px;
+            border-right: 1px solid var(--border);
+        }
+
+        .metric:last-child { border-right: none; }
+
+        .metric-val {
+            font-size: 28px;
+            font-weight: 300;
+            color: var(--text);
+            letter-spacing: -0.02em;
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+
+        .metric-val em {
+            font-style: normal;
+            color: var(--blue);
+        }
+
+        .metric-lbl {
+            font-size: 12px;
+            font-weight: 300;
+            color: var(--text-3);
+            letter-spacing: 0.02em;
+        }
+
+        /* ─── Section shared ─── */
+        section { position: relative; }
+
+        .section-label {
+            font-size: 11px;
+            font-weight: 400;
+            color: var(--blue);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-label::before {
+            content: '';
+            width: 18px; height: 1px;
+            background: var(--blue);
+            border-radius: 1px;
+        }
+
+        .section-h2 {
+            font-size: 30px;
+            font-weight: 300;
+            letter-spacing: -0.02em;
+            color: var(--text);
+            line-height: 1.2;
+            margin-bottom: 10px;
+        }
+
         .section-sub {
-            font-size: 15px;
-            color: var(--text-muted);
-            max-width: 520px;
+            font-size: 14px;
+            font-weight: 300;
+            color: var(--text-2);
             line-height: 1.65;
+            max-width: 500px;
         }
 
         /* ─── Services ─── */
-        .services-section { padding: 80px 0; }
+        .services { padding: 80px 0; }
 
-        .services-header {
-            text-align: center;
-            margin-bottom: 56px;
-        }
-
-        .services-header .section-sub { margin: 0 auto; }
+        .services-head { margin-bottom: 48px; }
 
         .services-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            gap: 16px;
         }
 
-        .service-card {
-            background: var(--bg-card);
+        .svc-card {
+            background: var(--bg);
             border: 1px solid var(--border);
-            border-radius: 18px;
+            border-radius: 10px;
             padding: 36px;
+            transition: border-color 0.15s, box-shadow 0.15s;
             position: relative;
             overflow: hidden;
-            transition: border-color 0.2s, transform 0.2s;
         }
 
-        .service-card:hover {
+        .svc-card:hover {
             border-color: var(--border-hi);
-            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
         }
 
-        .service-card::before {
+        .svc-card::after {
             content: '';
             position: absolute;
             top: 0; left: 0; right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--s-color, var(--accent)), transparent);
-            opacity: 0.5;
+            height: 2px;
+            background: var(--svc-color, var(--blue));
+            opacity: 0;
+            transition: opacity 0.15s;
         }
 
-        .service-card-glow {
-            position: absolute;
-            top: -60px; right: -60px;
-            width: 200px; height: 200px;
-            background: radial-gradient(ellipse, var(--s-glow, rgba(0,229,255,0.06)) 0%, transparent 65%);
-            pointer-events: none;
-        }
+        .svc-card:hover::after { opacity: 1; }
 
-        .service-icon {
-            width: 48px; height: 48px;
-            border-radius: 12px;
+        .svc-icon {
+            width: 36px; height: 36px;
+            border-radius: 8px;
+            background: var(--svc-bg, var(--blue-dim));
+            color: var(--svc-color, var(--blue));
             display: flex; align-items: center; justify-content: center;
-            margin-bottom: 22px;
+            margin-bottom: 20px;
         }
 
-        .service-icon svg { width: 22px; height: 22px; }
+        .svc-icon svg { width: 17px; height: 17px; }
 
-        .service-title {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 22px;
-            font-weight: 700;
+        .svc-title {
+            font-size: 17px;
+            font-weight: 400;
             color: var(--text);
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+            letter-spacing: -0.01em;
         }
 
-        .service-desc {
-            font-size: 14px;
-            color: var(--text-muted);
+        .svc-desc {
+            font-size: 13px;
+            font-weight: 300;
+            color: var(--text-2);
             line-height: 1.65;
-            margin-bottom: 26px;
+            margin-bottom: 24px;
         }
 
-        .service-features {
+        .svc-list {
             list-style: none;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
         }
 
-        .service-features li {
+        .svc-list li {
             display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 13.5px;
-            color: var(--text-muted);
+            align-items: flex-start;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 300;
+            color: var(--text-2);
+            line-height: 1.5;
         }
 
-        .check-icon {
-            width: 18px; height: 18px;
+        .svc-check {
+            width: 15px; height: 15px;
             border-radius: 50%;
-            background: var(--s-icon-bg, rgba(0,229,255,0.12));
-            color: var(--s-icon-color, var(--accent));
+            background: var(--green-dim);
+            color: var(--green);
             display: flex; align-items: center; justify-content: center;
             flex-shrink: 0;
+            margin-top: 1px;
         }
 
-        .check-icon svg { width: 10px; height: 10px; }
+        .svc-check svg { width: 8px; height: 8px; }
 
-        /* ─── Features grid ─── */
-        .features-section { padding: 80px 0; }
+        /* ─── Features ─── */
+        .features { padding: 80px 0; background: var(--bg-2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
 
-        .features-layout {
+        .features-head { margin-bottom: 48px; }
+
+        .feat-grid {
             display: grid;
-            grid-template-columns: 1fr 1.4fr;
-            gap: 60px;
-            align-items: center;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
-        }
-
-        .feat-card {
-            background: var(--bg-card);
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+            background: var(--border);
             border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 20px;
-            transition: border-color 0.18s;
+            border-radius: 10px;
+            overflow: hidden;
         }
 
-        .feat-card:hover { border-color: var(--border-hi); }
+        .feat {
+            background: var(--bg);
+            padding: 28px 24px;
+            transition: background 0.12s;
+        }
+
+        .feat:hover { background: #fafbff; }
 
         .feat-icon {
             width: 32px; height: 32px;
-            border-radius: 8px;
+            border-radius: 7px;
             display: flex; align-items: center; justify-content: center;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
         }
 
         .feat-icon svg { width: 15px; height: 15px; }
 
         .feat-title {
-            font-family: 'Plus Jakarta Sans', sans-serif;
             font-size: 14px;
-            font-weight: 700;
+            font-weight: 400;
             color: var(--text);
             margin-bottom: 6px;
+            letter-spacing: -0.005em;
         }
 
         .feat-desc {
             font-size: 12.5px;
-            color: var(--text-muted);
-            line-height: 1.55;
+            font-weight: 300;
+            color: var(--text-2);
+            line-height: 1.6;
         }
 
-        /* ─── How it works ─── */
-        .how-section { padding: 80px 0; }
+        /* ─── Steps ─── */
+        .steps { padding: 80px 0; }
+
+        .steps-head { margin-bottom: 48px; }
 
         .steps-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-            margin-top: 50px;
+            gap: 0;
             position: relative;
         }
 
         .steps-grid::before {
             content: '';
             position: absolute;
-            top: 32px; left: calc(16.66% + 20px); right: calc(16.66% + 20px);
+            top: 18px;
+            left: calc(16.7% + 18px);
+            right: calc(16.7% + 18px);
             height: 1px;
-            background: linear-gradient(90deg, var(--accent) 0%, var(--purple) 100%);
-            opacity: 0.2;
+            background: repeating-linear-gradient(90deg, var(--blue) 0, var(--blue) 6px, transparent 6px, transparent 14px);
+            opacity: 0.3;
         }
 
-        .step-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 28px 24px;
-            position: relative;
-            text-align: center;
+        .step {
+            padding: 0 24px;
+            border-right: 1px solid var(--border);
         }
 
-        .step-number {
-            width: 40px; height: 40px;
+        .step:last-child { border-right: none; }
+
+        .step-num {
+            width: 36px; height: 36px;
             border-radius: 50%;
-            background: var(--bg-hover);
+            background: var(--bg);
             border: 1px solid var(--border-hi);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--accent);
+            font-size: 13px;
+            font-weight: 300;
+            color: var(--blue);
             display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 18px;
+            margin-bottom: 20px;
         }
 
         .step-title {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 16px;
-            font-weight: 700;
+            font-size: 15px;
+            font-weight: 400;
             color: var(--text);
-            margin-bottom: 8px;
+            margin-bottom: 7px;
+            letter-spacing: -0.01em;
         }
 
         .step-desc {
             font-size: 13px;
-            color: var(--text-muted);
-            line-height: 1.6;
+            font-weight: 300;
+            color: var(--text-2);
+            line-height: 1.65;
         }
 
-        /* ─── CTA Section ─── */
-        .cta-section { padding: 100px 0; }
-
-        .cta-box {
-            background: var(--bg-card);
-            border: 1px solid var(--border-hi);
-            border-radius: 24px;
-            padding: 60px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
+        /* ─── CTA ─── */
+        .cta-section {
+            padding: 80px 0;
+            background: var(--text);
         }
 
-        .cta-box::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--accent), var(--purple), transparent);
-            opacity: 0.5;
+        .cta-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+            flex-wrap: wrap;
         }
 
-        .cta-glow-1 {
-            position: absolute;
-            top: -80px; left: -80px;
-            width: 300px; height: 300px;
-            background: radial-gradient(ellipse, rgba(0,229,255,0.05) 0%, transparent 65%);
-            pointer-events: none;
-        }
-
-        .cta-glow-2 {
-            position: absolute;
-            bottom: -80px; right: -80px;
-            width: 300px; height: 300px;
-            background: radial-gradient(ellipse, rgba(167,139,250,0.05) 0%, transparent 65%);
-            pointer-events: none;
-        }
+        .cta-text {}
 
         .cta-h2 {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: clamp(28px, 4vw, 44px);
-            font-weight: 800;
+            font-size: 28px;
+            font-weight: 300;
+            color: #fff;
             letter-spacing: -0.02em;
-            color: var(--text);
-            margin-bottom: 14px;
-            line-height: 1.1;
-            position: relative;
+            margin-bottom: 8px;
+            line-height: 1.2;
         }
 
         .cta-sub {
-            font-size: 15px;
-            color: var(--text-muted);
-            margin-bottom: 36px;
-            max-width: 480px;
-            margin-left: auto;
-            margin-right: auto;
-            position: relative;
+            font-size: 13px;
+            font-weight: 300;
+            color: rgba(255,255,255,0.55);
+            line-height: 1.6;
+            max-width: 400px;
         }
 
-        .cta-actions {
-            display: flex;
-            justify-content: center;
+        .cta-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+
+        .cta-btn-primary {
+            padding: 9px 22px;
+            background: #fff;
+            color: var(--text);
+            font-size: 13px;
+            font-weight: 400;
+            border: none;
+            border-radius: 6px;
+            display: inline-flex;
             align-items: center;
-            gap: 14px;
-            flex-wrap: wrap;
-            position: relative;
+            gap: 6px;
+            transition: background 0.12s, box-shadow 0.12s;
+        }
+
+        .cta-btn-primary:hover {
+            background: #f0f4ff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+        }
+
+        .cta-btn-secondary {
+            padding: 9px 20px;
+            background: transparent;
+            color: rgba(255,255,255,0.6);
+            font-size: 13px;
+            font-weight: 300;
+            border: 1px solid rgba(255,255,255,0.18);
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: border-color 0.12s, color 0.12s;
+        }
+
+        .cta-btn-secondary:hover {
+            border-color: rgba(255,255,255,0.5);
+            color: #fff;
         }
 
         /* ─── Footer ─── */
-        .site-footer {
+        .footer {
+            padding: 32px 0;
             border-top: 1px solid var(--border);
-            padding: 40px 0;
-            position: relative;
-            z-index: 1;
+            background: var(--bg);
         }
 
         .footer-inner {
@@ -811,203 +804,172 @@
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
-            gap: 20px;
+            gap: 16px;
         }
 
         .footer-brand {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
+        }
+
+        .footer-brand-name {
+            font-size: 13px;
+            font-weight: 300;
+            color: var(--text-2);
         }
 
         .footer-copy {
             font-size: 12px;
-            color: var(--text-muted);
+            font-weight: 300;
+            color: var(--text-3);
         }
 
         .footer-links {
             display: flex;
-            gap: 20px;
+            gap: 18px;
         }
 
         .footer-links a {
             font-size: 12px;
-            color: var(--text-muted);
-            transition: color 0.14s;
+            font-weight: 300;
+            color: var(--text-3);
+            transition: color 0.12s;
         }
 
-        .footer-links a:hover { color: var(--text); }
+        .footer-links a:hover { color: var(--text-2); }
 
         /* ─── Animations ─── */
-        @keyframes fade-up {
-            from { opacity: 0; transform: translateY(16px); }
+        @keyframes rise {
+            from { opacity: 0; transform: translateY(14px); }
             to   { opacity: 1; transform: translateY(0); }
         }
 
-        .hero-eyebrow { animation: fade-up 0.5s ease 0.1s both; }
-        .hero-h1      { animation: fade-up 0.5s ease 0.2s both; }
-        .hero-sub     { animation: fade-up 0.5s ease 0.32s both; }
-        .hero-actions { animation: fade-up 0.5s ease 0.44s both; }
-        .hero-visual  { animation: fade-up 0.6s ease 0.3s both; }
+        .hero-badge  { animation: rise 0.4s ease 0.05s both; }
+        .hero-h1     { animation: rise 0.4s ease 0.12s both; }
+        .hero-sub    { animation: rise 0.4s ease 0.19s both; }
+        .hero-actions{ animation: rise 0.4s ease 0.26s both; }
+        .hero-visual { animation: rise 0.5s ease 0.2s both; }
 
-        /* ─── Scroll reveal ─── */
         .reveal {
             opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.6s ease, transform 0.6s ease;
+            transform: translateY(12px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
         }
-        .reveal.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        .reveal.in { opacity: 1; transform: none; }
     </style>
 </head>
 <body>
 
-<div class="page-bg">
-    <div class="page-bg-glow-1"></div>
-    <div class="page-bg-glow-2"></div>
-    <div class="page-bg-glow-3"></div>
-</div>
-
-{{-- ─── Nav ─── --}}
-<nav class="site-nav">
-    <div class="nav-brand">
-        <div class="nav-mark">VX</div>
-        <div>
-            <div class="nav-brand-name">Velinex</div>
-            <span class="nav-brand-sub">Cloud</span>
+<!-- Nav -->
+<nav class="nav">
+    <div class="wrap nav-inner">
+        <a href="/" class="nav-brand">
+            <div class="nav-logo">VX</div>
+            <span class="nav-name">Velinex <span>Cloud</span></span>
+        </a>
+        <div class="nav-links">
+            <a href="#services" class="nav-link">Services</a>
+            <a href="#features" class="nav-link">Features</a>
+            <a href="#how" class="nav-link">How it works</a>
+            @auth
+                <a href="{{ route('mail.domains.index') }}" class="nav-btn">Dashboard</a>
+            @else
+                <a href="{{ route('login') }}" class="nav-login">Sign in</a>
+                <a href="{{ route('auth.register') }}" class="nav-btn">Get started</a>
+            @endauth
         </div>
-    </div>
-    <div class="nav-links">
-        <a href="#services" class="nav-link">Services</a>
-        <a href="#features" class="nav-link">Features</a>
-        <a href="#how" class="nav-link">How it works</a>
-        @auth
-            <a href="{{ route('mail.domains.index') }}" class="nav-link nav-cta">Dashboard →</a>
-        @else
-            <a href="{{ route('login') }}" class="nav-link">Sign in</a>
-            <a href="{{ route('auth.register') }}" class="nav-link nav-cta">Get started →</a>
-        @endauth
     </div>
 </nav>
 
-{{-- ─── Hero ─── --}}
+<!-- Hero -->
 <section class="hero">
+    <div class="hero-bg"></div>
     <div class="wrap">
         <div class="hero-inner">
             <div>
-                <div class="hero-eyebrow">
-                    <span class="hero-eyebrow-dot"></span>
-                    Enterprise Infrastructure
+                <div class="hero-badge">
+                    <span class="hero-badge-dot"></span>
+                    Enterprise infrastructure
                 </div>
                 <h1 class="hero-h1">
-                    Hosting that<br>
-                    works as hard<br>
-                    as <em>you do.</em>
+                    Web hosting and<br>
+                    business email that<br>
+                    <strong>just works.</strong>
                 </h1>
                 <p class="hero-sub">
-                    Production-grade web hosting and business email built
-                    for teams that won't compromise on uptime, security, or
-                    deliverability. Your infrastructure, fully under control.
+                    Production-grade hosting and self-hosted email built for teams that need reliability, deliverability, and full control over their infrastructure.
                 </p>
                 <div class="hero-actions">
-                    <a href="{{ route('auth.register') }}" class="btn-hero-primary">
+                    <a href="{{ route('auth.register') }}" class="btn-primary">
                         Start for free
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;">
-                            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-                        </svg>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                     </a>
-                    <a href="#features" class="btn-hero-secondary">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;">
-                            <circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/>
-                        </svg>
-                        See how it works
-                    </a>
+                    <a href="#services" class="btn-secondary">View services</a>
                 </div>
             </div>
 
-            {{-- Server Diagram --}}
+            <!-- Product mockup -->
             <div class="hero-visual">
-                <div class="server-diagram">
-                    <div class="diagram-uptime">
-                        <div>
-                            <div class="uptime-val">99.97%</div>
-                            <div class="uptime-label">Uptime SLA</div>
+                <div class="product-card">
+                    <div class="pc-topbar">
+                        <div class="pc-dots">
+                            <div class="pc-dot" style="background:#f87171;"></div>
+                            <div class="pc-dot" style="background:#fbbf24;"></div>
+                            <div class="pc-dot" style="background:#34d399;"></div>
                         </div>
-                        <div style="flex:1; display:flex; gap: 3px; align-items: flex-end; height: 36px; padding: 0 12px;">
-                            @php $bars = [60, 75, 55, 80, 90, 70, 95, 85, 100, 88, 92, 78, 95, 100, 96]; @endphp
-                            @foreach($bars as $h)
-                                <div style="flex:1; background: rgba(0,229,153,0.3); border-radius: 2px; height: {{ $h }}%;"></div>
-                            @endforeach
-                        </div>
-                        <div style="font-family:'DM Mono',monospace; font-size:10px; color: var(--success);">● LIVE</div>
+                        <span class="pc-title">cloud.velinexlabs.com — Mail Dashboard</span>
                     </div>
-
-                    <div class="server-unit" style="--unit-color: var(--accent);">
-                        <div class="server-lights">
-                            <div class="s-light on"></div>
-                            <div class="s-light on" style="animation-delay: 1s;"></div>
-                            <div class="s-light mid"></div>
-                        </div>
-                        <div style="flex:1;">
-                            <div class="server-title">Web Cluster — KE-01</div>
-                            <div class="server-bars" style="margin-top: 6px;">
-                                <div class="server-bar-row">
-                                    <span class="server-bar-label">CPU</span>
-                                    <div class="server-bar-track"><div class="server-bar-fill" style="width:42%;--fill-color:var(--accent);"></div></div>
-                                </div>
-                                <div class="server-bar-row">
-                                    <span class="server-bar-label">RAM</span>
-                                    <div class="server-bar-track"><div class="server-bar-fill" style="width:67%;--fill-color:var(--purple);"></div></div>
-                                </div>
+                    <div class="pc-body">
+                        <div class="pc-stat-row">
+                            <div class="pc-stat">
+                                <div class="pc-stat-val">12</div>
+                                <div class="pc-stat-lbl">Domains</div>
+                            </div>
+                            <div class="pc-stat">
+                                <div class="pc-stat-val" style="color: var(--green);">9</div>
+                                <div class="pc-stat-lbl">Verified</div>
+                            </div>
+                            <div class="pc-stat">
+                                <div class="pc-stat-val">48</div>
+                                <div class="pc-stat-lbl">Mailboxes</div>
                             </div>
                         </div>
-                        <span class="server-tag" style="background: rgba(0,229,255,0.12); color: var(--accent);">nginx</span>
+                        <div class="pc-table-head">
+                            <span class="pc-th">Domain</span>
+                            <span class="pc-th">Status</span>
+                            <span class="pc-th">Records</span>
+                            <span class="pc-th">Mail</span>
+                        </div>
+                        @php
+                            $rows = [
+                                ['acme.co.ke', 'verified', '7', '12'],
+                                ['runfast.io', 'verified', '7', '6'],
+                                ['buildlabs.dev', 'pending', '3', '0'],
+                                ['skyline.co.ke', 'verified', '7', '9'],
+                            ];
+                        @endphp
+                        @foreach($rows as $row)
+                        <div class="pc-row">
+                            <span class="pc-domain">{{ $row[0] }}</span>
+                            <span>
+                                <span class="pc-badge {{ $row[1] === 'verified' ? 'pc-badge-green' : 'pc-badge-amber' }}">
+                                    <span class="pc-badge-dot"></span>{{ $row[1] }}
+                                </span>
+                            </span>
+                            <span class="pc-cell">{{ $row[2] }}</span>
+                            <span class="pc-cell">{{ $row[3] }}</span>
+                        </div>
+                        @endforeach
                     </div>
-
-                    <div class="server-unit" style="--unit-color: var(--purple);">
-                        <div class="server-lights">
-                            <div class="s-light on" style="animation-delay: 0.5s;"></div>
-                            <div class="s-light on" style="animation-delay: 2s;"></div>
-                            <div class="s-light off"></div>
-                        </div>
-                        <div style="flex:1;">
-                            <div class="server-title">Mail Server — iRedMail</div>
-                            <div class="server-bars" style="margin-top: 6px;">
-                                <div class="server-bar-row">
-                                    <span class="server-bar-label">SMTP</span>
-                                    <div class="server-bar-track"><div class="server-bar-fill" style="width:28%;--fill-color:var(--success);"></div></div>
-                                </div>
-                                <div class="server-bar-row">
-                                    <span class="server-bar-label">Queue</span>
-                                    <div class="server-bar-track"><div class="server-bar-fill" style="width:15%;--fill-color:var(--warning);"></div></div>
-                                </div>
-                            </div>
-                        </div>
-                        <span class="server-tag" style="background: rgba(167,139,250,0.12); color: var(--purple);">postfix</span>
+                </div>
+                <div class="pc-float">
+                    <div class="pc-float-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
                     </div>
-
-                    <div class="server-unit" style="--unit-color: var(--success);">
-                        <div class="server-lights">
-                            <div class="s-light on" style="animation-delay: 1.5s;"></div>
-                            <div class="s-light mid" style="animation-delay: 0.8s;"></div>
-                            <div class="s-light on"></div>
-                        </div>
-                        <div style="flex:1;">
-                            <div class="server-title">DNS Resolver — Anycast</div>
-                            <div class="server-bars" style="margin-top: 6px;">
-                                <div class="server-bar-row">
-                                    <span class="server-bar-label">Lat.</span>
-                                    <div class="server-bar-track"><div class="server-bar-fill" style="width:12%;--fill-color:var(--success);"></div></div>
-                                </div>
-                                <div class="server-bar-row">
-                                    <span class="server-bar-label">RPS</span>
-                                    <div class="server-bar-track"><div class="server-bar-fill" style="width:58%;--fill-color:var(--accent);"></div></div>
-                                </div>
-                            </div>
-                        </div>
-                        <span class="server-tag" style="background: rgba(0,229,153,0.12); color: var(--success);">bind9</span>
+                    <div>
+                        <div class="pc-float-val">99.97<small style="font-size:11px;">%</small></div>
+                        <div class="pc-float-lbl">Uptime SLA</div>
                     </div>
                 </div>
             </div>
@@ -1015,256 +977,192 @@
     </div>
 </section>
 
-{{-- ─── Metrics ─── --}}
-<div class="metrics-strip" style="position:relative;z-index:1;">
+<!-- Metrics -->
+<div class="metrics reveal">
     <div class="wrap">
-        <div class="metrics-inner">
-            <div class="metric-item reveal">
-                <div class="metric-val">99<span>.97%</span></div>
-                <div class="metric-desc">Uptime Guarantee</div>
+        <div class="metrics-grid">
+            <div class="metric">
+                <div class="metric-val">99<em>.97%</em></div>
+                <div class="metric-lbl">Uptime guarantee</div>
             </div>
-            <div class="metric-item reveal" style="transition-delay:0.1s;">
-                <div class="metric-val"><span>&lt;</span>5ms</div>
-                <div class="metric-desc">DNS propagation</div>
+            <div class="metric">
+                <div class="metric-val">&lt;<em>5ms</em></div>
+                <div class="metric-lbl">DNS propagation</div>
             </div>
-            <div class="metric-item reveal" style="transition-delay:0.2s;">
-                <div class="metric-val">24<span>/7</span></div>
-                <div class="metric-desc">Expert Support</div>
+            <div class="metric">
+                <div class="metric-val">24<em>/7</em></div>
+                <div class="metric-lbl">Expert support</div>
             </div>
-            <div class="metric-item reveal" style="transition-delay:0.3s;">
-                <div class="metric-val"><span>∞</span></div>
-                <div class="metric-desc">Mailboxes per domain</div>
+            <div class="metric">
+                <div class="metric-val"><em>∞</em></div>
+                <div class="metric-lbl">Mailboxes per domain</div>
             </div>
         </div>
     </div>
 </div>
 
-{{-- ─── Services ─── --}}
-<section id="services" class="services-section">
+<!-- Services -->
+<section id="services" class="services">
     <div class="wrap">
-        <div class="services-header reveal">
-            <div class="section-eyebrow">What we offer</div>
-            <h2 class="section-h2">Two pillars of your<br>online presence.</h2>
-            <p class="section-sub">Everything your business needs to communicate reliably and host at scale.</p>
+        <div class="services-head reveal">
+            <div class="section-label">What we offer</div>
+            <h2 class="section-h2">Two services, one platform.</h2>
+            <p class="section-sub">Everything your business needs to host and communicate — managed from a single dashboard.</p>
         </div>
         <div class="services-grid">
-            <div class="service-card reveal" style="--s-color: var(--accent);">
-                <div class="service-card-glow" style="--s-glow: rgba(0,229,255,0.07);"></div>
-                <div class="service-icon" style="background: rgba(0,229,255,0.10); color: var(--accent);">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
-                    </svg>
+            <div class="svc-card reveal" style="--svc-color: var(--blue); --svc-bg: var(--blue-dim);">
+                <div class="svc-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
                 </div>
-                <div class="service-title">Web Hosting</div>
-                <div class="service-desc">
-                    High-performance hosting powered by nginx and LiteSpeed. SSD storage, HTTP/3, automatic SSL, and global CDN edge nodes for blazing-fast delivery anywhere.
-                </div>
-                <ul class="service-features" style="--s-icon-bg: rgba(0,229,255,0.10); --s-icon-color: var(--accent);">
-                    <li>
-                        <div class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-                        Automatic SSL certificates via Let's Encrypt
-                    </li>
-                    <li>
-                        <div class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-                        PHP 8.3, Node.js, Python, Ruby runtimes
-                    </li>
-                    <li>
-                        <div class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-                        One-click staging &amp; deployment pipelines
-                    </li>
-                    <li>
-                        <div class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-                        Daily automated backups, 30-day retention
-                    </li>
+                <div class="svc-title">Web Hosting</div>
+                <div class="svc-desc">High-performance hosting powered by nginx. SSD storage, HTTP/3, automatic SSL, and global CDN edge caching for sub-50ms TTFB worldwide.</div>
+                <ul class="svc-list">
+                    <li><span class="svc-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Automatic SSL via Let's Encrypt</li>
+                    <li><span class="svc-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> PHP 8.3, Node.js 20, Python runtimes</li>
+                    <li><span class="svc-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Daily backups with 30-day retention</li>
+                    <li><span class="svc-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> One-click staging environments</li>
                 </ul>
             </div>
-
-            <div class="service-card reveal" style="--s-color: var(--purple); transition-delay: 0.12s;">
-                <div class="service-card-glow" style="--s-glow: rgba(167,139,250,0.06);"></div>
-                <div class="service-icon" style="background: rgba(167,139,250,0.10); color: var(--purple);">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                        <polyline points="22,6 12,13 2,6"/>
-                    </svg>
+            <div class="svc-card reveal" style="--svc-color: #7c3aed; --svc-bg: rgba(124,58,237,0.07); transition-delay: 0.1s;">
+                <div class="svc-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
                 </div>
-                <div class="service-title">Business Email</div>
-                <div class="service-desc">
-                    Self-hosted iRedMail infrastructure with complete DNS control. Your brand, your domain, your data — with SPF, DKIM, and DMARC configured in minutes.
-                </div>
-                <ul class="service-features" style="--s-icon-bg: rgba(167,139,250,0.10); --s-icon-color: var(--purple);">
-                    <li>
-                        <div class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-                        Auto-generated SPF, DKIM &amp; DMARC records
-                    </li>
-                    <li>
-                        <div class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-                        Unlimited mailboxes per domain
-                    </li>
-                    <li>
-                        <div class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-                        Webmail (Roundcube) + IMAP/SMTP access
-                    </li>
-                    <li>
-                        <div class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-                        Spam filtering, virus scanning, greylisting
-                    </li>
+                <div class="svc-title">Business Email</div>
+                <div class="svc-desc">Self-hosted iRedMail with full DNS control. Your domain, your data — with SPF, DKIM, and DMARC configured automatically in under a minute.</div>
+                <ul class="svc-list">
+                    <li><span class="svc-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Auto-generated SPF, DKIM & DMARC</li>
+                    <li><span class="svc-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Unlimited mailboxes per domain</li>
+                    <li><span class="svc-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Webmail + IMAP/SMTP/POP3</li>
+                    <li><span class="svc-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Spam filtering & virus scanning</li>
                 </ul>
             </div>
         </div>
     </div>
 </section>
 
-{{-- ─── Features ─── --}}
-<section id="features" class="features-section">
+<!-- Features -->
+<section id="features" class="features">
     <div class="wrap">
-        <div class="features-layout">
-            <div class="reveal">
-                <div class="section-eyebrow">Why Velinex</div>
-                <h2 class="section-h2">Built different,<br>by design.</h2>
-                <p class="section-sub" style="margin-bottom: 28px;">
-                    We don't cut corners on infrastructure. Every service is engineered
-                    for reliability, security, and full transparency.
-                </p>
-                <a href="{{ route('auth.register') }}" class="btn-hero-primary" style="font-size:13px; padding: 10px 20px;">
-                    Get started free
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;">
-                        <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-                    </svg>
-                </a>
+        <div class="features-head reveal">
+            <div class="section-label">Platform</div>
+            <h2 class="section-h2">Built for professionals.</h2>
+            <p class="section-sub">The infrastructure features that matter to teams running real workloads in production.</p>
+        </div>
+        <div class="feat-grid reveal">
+            <div class="feat">
+                <div class="feat-icon" style="background:var(--blue-dim);color:var(--blue);">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+                <div class="feat-title">TLS everywhere</div>
+                <div class="feat-desc">Automatic certificate provisioning and renewal. TLS 1.3 enforced across all services.</div>
             </div>
-            <div class="features-grid reveal" style="transition-delay: 0.15s;">
-                <div class="feat-card">
-                    <div class="feat-icon" style="background: rgba(0,229,255,0.10); color: var(--accent);">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                    </div>
-                    <div class="feat-title">Zero-trust Security</div>
-                    <div class="feat-desc">TLS 1.3 everywhere, hardened server configs, and automated vulnerability scans.</div>
+            <div class="feat">
+                <div class="feat-icon" style="background:var(--green-dim);color:var(--green);">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
                 </div>
-                <div class="feat-card">
-                    <div class="feat-icon" style="background: rgba(0,229,153,0.10); color: var(--success);">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                    </div>
-                    <div class="feat-title">Real-time Monitoring</div>
-                    <div class="feat-desc">Live dashboards for uptime, mail queues, DNS propagation, and delivery rates.</div>
+                <div class="feat-title">Live monitoring</div>
+                <div class="feat-desc">Real-time visibility into uptime, mail queues, DNS propagation, and delivery rates.</div>
+            </div>
+            <div class="feat">
+                <div class="feat-icon" style="background:rgba(124,58,237,0.07);color:#7c3aed;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
                 </div>
-                <div class="feat-card">
-                    <div class="feat-icon" style="background: rgba(167,139,250,0.10); color: var(--purple);">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-                    </div>
-                    <div class="feat-title">Instant Provisioning</div>
-                    <div class="feat-desc">Domains, mailboxes, and DNS records provisioned in under 60 seconds via the dashboard.</div>
+                <div class="feat-title">DNS management</div>
+                <div class="feat-desc">DNS records auto-generated on domain creation. One-click verification to confirm propagation.</div>
+            </div>
+            <div class="feat">
+                <div class="feat-icon" style="background:rgba(245,158,11,0.08);color:#d97706;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
                 </div>
-                <div class="feat-card">
-                    <div class="feat-icon" style="background: rgba(255,176,32,0.10); color: var(--warning);">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                    </div>
-                    <div class="feat-title">99.97% Uptime SLA</div>
-                    <div class="feat-desc">Guaranteed availability backed by redundant infrastructure and proactive failover.</div>
+                <div class="feat-title">Instant provisioning</div>
+                <div class="feat-desc">Domains, mailboxes, and DNS records go live in under 60 seconds from the dashboard.</div>
+            </div>
+            <div class="feat">
+                <div class="feat-icon" style="background:rgba(239,68,68,0.07);color:#dc2626;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
                 </div>
-                <div class="feat-card">
-                    <div class="feat-icon" style="background: rgba(255,77,106,0.10); color: var(--danger);">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-                    </div>
-                    <div class="feat-title">Developer-first API</div>
-                    <div class="feat-desc">Automate everything — domain creation, mailbox management, and DNS via REST API.</div>
+                <div class="feat-title">REST API</div>
+                <div class="feat-desc">Automate domain management, mailbox provisioning, and DNS configuration via API.</div>
+            </div>
+            <div class="feat">
+                <div class="feat-icon" style="background:var(--blue-dim);color:var(--blue);">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                 </div>
-                <div class="feat-card">
-                    <div class="feat-icon" style="background: rgba(0,229,255,0.10); color: var(--accent);">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                    </div>
-                    <div class="feat-title">Multi-tenant Ready</div>
-                    <div class="feat-desc">Manage multiple client domains and organizations from a single unified dashboard.</div>
-                </div>
+                <div class="feat-title">Multi-tenant</div>
+                <div class="feat-desc">Manage domains and mailboxes across multiple clients and organizations from one place.</div>
             </div>
         </div>
     </div>
 </section>
 
-{{-- ─── How it works ─── --}}
-<section id="how" class="how-section">
+<!-- How it works -->
+<section id="how" class="steps">
     <div class="wrap">
-        <div style="text-align: center;" class="reveal">
-            <div class="section-eyebrow">Getting started</div>
-            <h2 class="section-h2">Up and running in<br>three steps.</h2>
+        <div class="steps-head reveal">
+            <div class="section-label">Getting started</div>
+            <h2 class="section-h2">Three steps to go live.</h2>
+            <p class="section-sub">No servers to configure, no command line required.</p>
         </div>
-        <div class="steps-grid">
-            <div class="step-card reveal" style="transition-delay: 0.05s;">
-                <div class="step-number">01</div>
-                <div class="step-title">Create your account</div>
-                <div class="step-desc">Register in under 60 seconds. No credit card required to start. Your company workspace is provisioned instantly.</div>
+        <div class="steps-grid reveal">
+            <div class="step">
+                <div class="step-num">01</div>
+                <div class="step-title">Create an account</div>
+                <div class="step-desc">Register in under a minute. Your company workspace is created automatically — no card required to start.</div>
             </div>
-            <div class="step-card reveal" style="transition-delay: 0.15s;">
-                <div class="step-number">02</div>
+            <div class="step">
+                <div class="step-num">02</div>
                 <div class="step-title">Add your domain</div>
-                <div class="step-desc">Enter your domain name. We auto-generate all required DNS records — SPF, DKIM, DMARC, and MX — ready to copy-paste.</div>
+                <div class="step-desc">Enter your domain name. SPF, DKIM, DMARC, and MX records are generated immediately, ready to add at your registrar.</div>
             </div>
-            <div class="step-card reveal" style="transition-delay: 0.25s;">
-                <div class="step-number">03</div>
-                <div class="step-title">Go live</div>
-                <div class="step-desc">Verify DNS propagation with one click, provision mailboxes, and you're fully operational. No command line needed.</div>
+            <div class="step">
+                <div class="step-num">03</div>
+                <div class="step-title">Verify and launch</div>
+                <div class="step-desc">Click Verify DNS — we check propagation automatically. Once confirmed, provision mailboxes and you're live.</div>
             </div>
         </div>
     </div>
 </section>
 
-{{-- ─── CTA ─── --}}
+<!-- CTA -->
 <section class="cta-section">
     <div class="wrap">
-        <div class="cta-box reveal">
-            <div class="cta-glow-1"></div>
-            <div class="cta-glow-2"></div>
-            <div class="cta-h2">Your infrastructure.<br>Your control.</div>
-            <p class="cta-sub">
-                Join businesses across East Africa that trust Velinex Cloud
-                for their web and email infrastructure.
-            </p>
+        <div class="cta-inner reveal">
+            <div class="cta-text">
+                <div class="cta-h2">Ready to take control<br>of your infrastructure?</div>
+                <p class="cta-sub">Join businesses across East Africa running their web and email on Velinex Cloud.</p>
+            </div>
             <div class="cta-actions">
-                <a href="{{ route('auth.register') }}" class="btn-hero-primary">
-                    Start free today
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;">
-                        <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-                    </svg>
+                <a href="{{ route('auth.register') }}" class="cta-btn-primary">
+                    Start for free
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </a>
-                <a href="{{ route('login') }}" class="btn-hero-secondary">
-                    Sign in →
-                </a>
+                <a href="{{ route('login') }}" class="cta-btn-secondary">Sign in →</a>
             </div>
         </div>
     </div>
 </section>
 
-{{-- ─── Footer ─── --}}
-<footer class="site-footer">
-    <div class="wrap">
-        <div class="footer-inner">
-            <div class="footer-brand">
-                <div class="nav-mark">VX</div>
-                <div>
-                    <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--text);">Velinex Cloud</div>
-                    <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--text-muted);">cloud.velinexlabs.com</div>
-                </div>
-            </div>
-            <div class="footer-copy">© {{ date('Y') }} Velinex Labs. All rights reserved.</div>
-            <div class="footer-links">
-                <a href="#">Privacy</a>
-                <a href="#">Terms</a>
-                <a href="{{ route('login') }}">Sign in</a>
-            </div>
+<!-- Footer -->
+<footer class="footer">
+    <div class="wrap footer-inner">
+        <div class="footer-brand">
+            <div class="nav-logo" style="width:22px;height:22px;font-size:9px;">VX</div>
+            <span class="footer-brand-name">Velinex Cloud</span>
+        </div>
+        <span class="footer-copy">© {{ date('Y') }} Velinex Labs. All rights reserved.</span>
+        <div class="footer-links">
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+            <a href="{{ route('login') }}">Sign in</a>
         </div>
     </div>
 </footer>
 
 <script>
-    // Scroll reveal
-    const reveals = document.querySelectorAll('.reveal');
-    const io = new IntersectionObserver((entries) => {
-        entries.forEach((e) => {
-            if (e.isIntersecting) {
-                e.target.classList.add('visible');
-            }
-        });
-    }, { threshold: 0.12 });
-    reveals.forEach((el) => io.observe(el));
+    const io = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 </script>
 
 </body>
