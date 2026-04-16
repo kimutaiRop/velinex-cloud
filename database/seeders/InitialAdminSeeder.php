@@ -26,10 +26,11 @@ class InitialAdminSeeder extends Seeder
         User::updateOrCreate(
             ['email' => $adminEmail],
             [
-                'name' => $adminName,
+                'name'     => $adminName,
                 'username' => strtolower($adminUsername),
                 'password' => Hash::make($adminPassword),
                 'client_id' => $client->id,
+                'is_admin' => true,
             ]
         );
     }

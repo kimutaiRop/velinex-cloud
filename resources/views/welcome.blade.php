@@ -625,6 +625,142 @@
         .footer-links a { font-size: 12px; font-weight: 300; color: var(--text-3); transition: color .12s; }
         .footer-links a:hover { color: var(--text-2); }
 
+        /* ─── PRICING ─── */
+        .pricing {
+            padding: 88px 0;
+            background: var(--bg);
+            position: relative;
+            overflow: hidden;
+        }
+        .pricing-head { margin-bottom: 52px; }
+        .pricing-note {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 4px 12px;
+            background: var(--green-dim);
+            border: 1px solid rgba(5,150,105,0.15);
+            border-radius: 99px;
+            font-size: 11.5px; font-weight: 400; color: var(--green);
+            margin-top: 14px;
+        }
+        .pricing-note svg { width: 11px; height: 11px; }
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            align-items: start;
+        }
+        .plan-card {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 28px 24px;
+            position: relative;
+            overflow: hidden;
+            transition: border-color .18s, box-shadow .18s, transform .18s;
+        }
+        .plan-card:hover { border-color: var(--border-hi); box-shadow: var(--shadow-md); transform: translateY(-3px); }
+        .plan-card.featured {
+            background: var(--blue);
+            border-color: var(--blue);
+            color: #fff;
+            transform: translateY(-8px);
+            box-shadow: 0 20px 48px rgba(26,108,240,0.3);
+        }
+        .plan-card.featured:hover { transform: translateY(-12px); box-shadow: 0 24px 56px rgba(26,108,240,0.38); }
+
+        /* Top accent ring decoration on featured */
+        .plan-card.featured::before {
+            content: ''; position: absolute;
+            top: -60px; right: -60px;
+            width: 180px; height: 180px; border-radius: 50%;
+            border: 1.5px solid rgba(255,255,255,0.12);
+            pointer-events: none;
+        }
+        .plan-card.featured::after {
+            content: ''; position: absolute;
+            top: -20px; right: -20px;
+            width: 100px; height: 100px; border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.08);
+            pointer-events: none;
+        }
+
+        .plan-badge {
+            display: inline-block;
+            padding: 2px 9px;
+            background: rgba(255,255,255,0.18);
+            border-radius: 99px;
+            font-size: 10px; font-weight: 400; color: #fff;
+            margin-bottom: 16px;
+        }
+        .plan-name {
+            font-size: 16px; font-weight: 400; color: var(--text);
+            margin-bottom: 4px; letter-spacing: -0.01em;
+        }
+        .featured .plan-name { color: #fff; }
+
+        .plan-desc {
+            font-size: 12.5px; font-weight: 300; color: var(--text-3);
+            line-height: 1.55; margin-bottom: 22px; min-height: 38px;
+        }
+        .featured .plan-desc { color: rgba(255,255,255,0.65); }
+
+        .plan-price { margin-bottom: 22px; }
+        .plan-price-val {
+            font-size: 32px; font-weight: 300; color: var(--text);
+            letter-spacing: -0.04em; line-height: 1;
+        }
+        .featured .plan-price-val { color: #fff; }
+        .plan-price-val small {
+            font-size: 13px; font-weight: 300; vertical-align: super; letter-spacing: 0;
+        }
+        .plan-price-period {
+            font-size: 11.5px; font-weight: 300; color: var(--text-3); margin-top: 2px;
+        }
+        .featured .plan-price-period { color: rgba(255,255,255,0.55); }
+
+        .plan-divider {
+            height: 1px; background: var(--border); margin-bottom: 18px;
+        }
+        .featured .plan-divider { background: rgba(255,255,255,0.14); }
+
+        .plan-features { list-style: none; display: flex; flex-direction: column; gap: 9px; margin-bottom: 26px; }
+        .plan-features li { display: flex; align-items: flex-start; gap: 8px; font-size: 12.5px; font-weight: 300; color: var(--text-2); line-height: 1.45; }
+        .featured .plan-features li { color: rgba(255,255,255,0.82); }
+        .plan-check {
+            width: 14px; height: 14px; border-radius: 50%;
+            background: var(--green-dim); color: var(--green);
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; margin-top: 1px;
+        }
+        .featured .plan-check { background: rgba(255,255,255,0.16); color: #fff; }
+        .plan-check svg { width: 7px; height: 7px; }
+
+        .plan-cta {
+            display: block; text-align: center;
+            padding: 9px 18px; border-radius: 7px; font-size: 13px; font-weight: 400;
+            transition: background .13s, box-shadow .13s, transform .13s;
+        }
+        .plan-cta-outline {
+            border: 1px solid var(--border-hi); color: var(--text-2); background: transparent;
+        }
+        .plan-cta-outline:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-dim); }
+        .plan-cta-white {
+            background: #fff; color: var(--blue); border: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+        }
+        .plan-cta-white:hover { background: #f0f5ff; box-shadow: 0 4px 18px rgba(0,0,0,0.16); transform: translateY(-1px); }
+
+        /* Storage highlight pill */
+        .plan-storage {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 3px 10px;
+            background: var(--bg-2); border: 1px solid var(--border);
+            border-radius: 99px; font-size: 11px; font-weight: 400; color: var(--text-2);
+            margin-bottom: 16px;
+        }
+        .featured .plan-storage { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.18); color: rgba(255,255,255,0.8); }
+        .plan-storage svg { width: 10px; height: 10px; }
+
         /* ─── Reveal ─── */
         @keyframes rise { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:none} }
         .hero-badge  { animation: rise .4s ease .05s both; }
@@ -652,6 +788,7 @@
             <a href="#services" class="nav-link">Services</a>
             <a href="#features" class="nav-link">Features</a>
             <a href="#how" class="nav-link">How it works</a>
+            <a href="#pricing" class="nav-link">Pricing</a>
             @auth
                 <a href="{{ route('mail.dashboard') }}" class="nav-btn">Dashboard</a>
             @else
@@ -945,6 +1082,74 @@
                 <div class="step-desc">Click Verify DNS — propagation is checked automatically. Once confirmed, provision mailboxes and you're live.</div>
             </div>
         </div>
+    </div>
+</section>
+
+<!-- Pricing -->
+<section id="pricing" class="pricing">
+    <div class="wrap">
+        <div class="pricing-head reveal">
+            <div class="section-eyebrow">Pricing</div>
+            <h2 class="section-h2">Simple, transparent pricing.</h2>
+            <p class="section-sub">Host with us and get <strong>unlimited mailboxes per domain</strong> on every plan. Only pay for storage and the number of domains you need.</p>
+            <div class="pricing-note">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                Unlimited mailboxes included on all plans — no per-seat fees
+            </div>
+        </div>
+
+        @if($plans->isNotEmpty())
+        <div class="pricing-grid reveal">
+            @foreach($plans as $plan)
+            <div class="plan-card {{ $plan->is_featured ? 'featured' : '' }}">
+                @if($plan->is_featured)
+                    <div class="plan-badge">Most popular</div>
+                @endif
+
+                <div class="plan-name">{{ $plan->name }}</div>
+                <div class="plan-desc">{{ $plan->description }}</div>
+
+                <div class="plan-price">
+                    @if($plan->price_kes === 0)
+                        <div class="plan-price-val">Free</div>
+                        <div class="plan-price-period">No credit card needed</div>
+                    @else
+                        <div class="plan-price-val"><small>KES </small>{{ number_format($plan->price_kes) }}</div>
+                        <div class="plan-price-period">per month, billed monthly</div>
+                    @endif
+                </div>
+
+                <div class="plan-storage">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+                    {{ $plan->storage_label }} / mailbox
+                </div>
+
+                <div class="plan-divider"></div>
+
+                <ul class="plan-features">
+                    @foreach($plan->features as $feature)
+                    <li>
+                        <span class="plan-check">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        </span>
+                        {{ $feature }}
+                    </li>
+                    @endforeach
+                </ul>
+
+                <a href="{{ route('auth.register') }}"
+                   class="plan-cta {{ $plan->is_featured ? 'plan-cta-white' : 'plan-cta-outline' }}">
+                    {{ $plan->price_kes === 0 ? 'Start for free' : 'Get started' }}
+                </a>
+            </div>
+            @endforeach
+        </div>
+        @endif
+
+        <p class="reveal" style="text-align:center;font-size:12.5px;font-weight:300;color:var(--text-3);margin-top:32px;">
+            All plans include auto-configured SPF, DKIM & DMARC records and unlimited mailboxes per domain.
+            Need a custom plan? <a href="mailto:hello@velinexlabs.com" style="color:var(--blue);">Contact us</a>.
+        </p>
     </div>
 </section>
 

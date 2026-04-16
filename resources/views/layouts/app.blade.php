@@ -57,6 +57,18 @@
                     DNS Setup
                 </a>
             @endif
+
+            @if(auth()->user()?->is_admin)
+            <span class="nav-section" style="margin-top:12px;">Admin</span>
+
+            <a href="{{ route('admin.plans.index') }}"
+               class="nav-item {{ request()->routeIs('admin.plans.*') ? 'active' : '' }}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+                </svg>
+                Mail Plans
+            </a>
+            @endif
         </nav>
 
         <div class="sidebar-footer">
