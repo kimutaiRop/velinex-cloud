@@ -6,7 +6,7 @@
     <title>Velinex Cloud — Web & Email Hosting for Business</title>
     <meta name="description" content="Enterprise-grade web hosting and business email. Built for reliability, security, and scale.">
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:300,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.bunny.net/css?family=figtree:300,400,500&display=swap" rel="stylesheet">
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     @endif
@@ -210,7 +210,7 @@
 
         .hero-h1 {
             font-size: 40px;
-            font-weight: 300;
+            font-weight: 400;
             line-height: 1.15;
             letter-spacing: -0.02em;
             color: var(--text);
@@ -218,7 +218,7 @@
         }
 
         .hero-h1 strong {
-            font-weight: 400;
+            font-weight: 500;
             color: var(--blue);
         }
 
@@ -506,7 +506,7 @@
 
         .section-h2 {
             font-size: 30px;
-            font-weight: 300;
+            font-weight: 400;
             letter-spacing: -0.02em;
             color: var(--text);
             line-height: 1.2;
@@ -737,7 +737,7 @@
 
         .cta-h2 {
             font-size: 28px;
-            font-weight: 300;
+            font-weight: 400;
             color: #fff;
             letter-spacing: -0.02em;
             margin-bottom: 8px;
