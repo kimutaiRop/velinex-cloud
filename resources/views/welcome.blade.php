@@ -883,24 +883,35 @@
         .mobile-plan-name { font-size: 15px; font-weight: 500; color: var(--text); }
         .mobile-plan-price { font-size: 20px; font-weight: 500; color: var(--text); margin: 3px 0 2px; }
         .mobile-plan-meta { font-size: 11px; color: var(--text-3); margin-bottom: 10px; }
-        .mobile-service-list { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
-        .mobile-service-row {
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            background: #fff;
-            padding: 9px 10px;
+        .mobile-plan-features {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            margin: 12px 0 0;
+            padding: 0;
         }
-        .mobile-service-text { font-size: 12px; color: var(--text-2); margin-bottom: 6px; }
-        .mobile-service-plans { display: flex; flex-wrap: wrap; gap: 6px; }
-        .mobile-service-chip {
-            font-size: 10.5px;
-            font-weight: 500;
-            border-radius: 999px;
-            padding: 3px 7px;
-            background: var(--blue-dim);
-            border: 1px solid var(--blue-mid);
-            color: #0a4d58;
+        .mobile-plan-features li {
+            display: flex;
+            align-items: flex-start;
+            gap: 7px;
+            font-size: 12px;
+            color: var(--text-2);
+            line-height: 1.4;
         }
+        .mobile-plan-check {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: rgba(255,96,67,0.1);
+            color: #f2573e;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+        .mobile-plan-check svg { width: 7px; height: 7px; }
 
         @media (max-width: 1080px) {
             .wrap { padding: 0 22px; }
@@ -974,43 +985,7 @@
 </head>
 <body>
 
-<!-- Nav -->
-<nav class="nav">
-    <div class="wrap nav-inner">
-        <a href="/" class="nav-brand">
-            <img src="{{ asset('logo.svg') }}" alt="Velinex Cloud" class="nav-logo">
-        </a>
-        <div class="nav-links nav-links-desktop">
-            <a href="#services" class="nav-link">Services</a>
-            <a href="#features" class="nav-link">Features</a>
-            <a href="#how" class="nav-link">How it works</a>
-            <a href="#pricing" class="nav-link">Pricing</a>
-            @auth
-                <a href="{{ route('mail.dashboard') }}" class="nav-btn">Dashboard</a>
-            @else
-                <a href="{{ route('login') }}" class="nav-login">Sign in</a>
-                <a href="{{ route('auth.register') }}" class="nav-btn">Get started</a>
-            @endauth
-        </div>
-        <button type="button" class="nav-menu-btn" id="nav-menu-open" aria-label="Open menu" aria-expanded="false" aria-controls="nav-drawer">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
-        </button>
-    </div>
-</nav>
-<div class="nav-drawer-backdrop" id="nav-drawer-backdrop" aria-hidden="true"></div>
-<aside class="nav-drawer-panel" id="nav-drawer" role="dialog" aria-modal="true" aria-label="Site menu" aria-hidden="true">
-    <div class="nav-drawer-head">Menu</div>
-    <a href="#services" class="nav-link">Services</a>
-    <a href="#features" class="nav-link">Features</a>
-    <a href="#how" class="nav-link">How it works</a>
-    <a href="#pricing" class="nav-link">Pricing</a>
-    @auth
-        <a href="{{ route('mail.dashboard') }}" class="nav-btn">Dashboard</a>
-    @else
-        <a href="{{ route('login') }}" class="nav-login">Sign in</a>
-        <a href="{{ route('auth.register') }}" class="nav-btn">Get started</a>
-    @endauth
-</aside>
+@include('welcome.partials.nav')
 
 <!-- Hero -->
 <section class="hero">
@@ -1298,279 +1273,12 @@
     </div>
 </section>
 
-<!-- Pricing -->
-<section id="pricing" class="pricing">
-    <div class="wrap">
-        <div class="pricing-head reveal">
-            <div class="section-eyebrow">Pricing</div>
-            <h2 class="section-h2">Simple, transparent pricing.</h2>
-            <p class="section-sub">Host with us and get <strong>unlimited mailboxes per domain</strong> on every plan. Works with Gmail, Outlook, and Apple Mail on mobile and desktop — no custom app required.</p>
-            <div class="pricing-note">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                Unlimited mailboxes included on all plans — no per-seat fees, no custom app lock-in
-            </div>
-        </div>
+@include('welcome.partials.pricing')
 
-        @if($plans->isNotEmpty())
-        @php
-            $plansList = $plans->values();
-            $planCount = $plansList->count();
-            $normalizedFeaturesByPlan = $plansList->map(function ($plan) {
-                return collect($plan->features)->map(function ($feature) {
-                    $normalizedFeature = preg_replace('/\bunlimited\s+domains?\b/i', 'Domain service', $feature);
-                    $normalizedFeature = preg_replace('/\bup to\s+\d+\s+domains?\b/i', 'Domain service', $normalizedFeature);
-                    return preg_replace('/\b\d+\s+domains?\b/i', 'Domain service', $normalizedFeature);
-                })->values();
-            })->values();
-            $maxFeatureRows = $normalizedFeaturesByPlan->max(function ($items) {
-                return $items->count();
-            }) ?? 0;
-            $sortedFeatureRows = collect(range(0, max($maxFeatureRows - 1, 0)))->map(function ($rowIndex) use ($normalizedFeaturesByPlan, $planCount) {
-                $maxSpan = 0;
-                $columnIndex = 0;
-                while ($columnIndex < $planCount) {
-                    $rowFeature = $normalizedFeaturesByPlan->get($columnIndex)?->get($rowIndex);
-                    $spanCount = 1;
-                    while ($columnIndex + $spanCount < $planCount && ($normalizedFeaturesByPlan->get($columnIndex + $spanCount)?->get($rowIndex) === $rowFeature)) {
-                        $spanCount++;
-                    }
-                    if ($rowFeature !== null) {
-                        $maxSpan = max($maxSpan, $spanCount);
-                    }
-                    $columnIndex += $spanCount;
-                }
-                return ['rowIndex' => $rowIndex, 'maxSpan' => $maxSpan];
-            })->sortByDesc('maxSpan')->values();
-        @endphp
-
-        <div class="pricing-grid-scroll reveal">
-        <div class="pricing-grid" style="--plan-count: {{ $plans->count() }};">
-            @for($dividerIndex = 1; $dividerIndex < $planCount; $dividerIndex++)
-                <div class="plan-column-divider" style="left: {{ ($dividerIndex / $planCount) * 100 }}%;"></div>
-            @endfor
-
-            @foreach($plansList as $plan)
-            <div class="plan-card {{ $plan->is_featured ? 'featured' : '' }}" @if($loop->last) style="border-right:none;" @endif>
-                <div class="plan-head">
-                    @if($plan->is_featured)
-                        <div class="plan-badge">Most popular</div>
-                    @endif
-
-                    <div class="plan-name">{{ $plan->name }}</div>
-                    <div class="plan-desc">{{ $plan->description }}</div>
-
-                    <div class="plan-price">
-                        @if($plan->price_kes === 0)
-                            <div class="plan-price-val">Free</div>
-                            <div class="plan-price-period">No credit card needed</div>
-                            <div class="plan-price-period">Also available yearly</div>
-                        @else
-                            <div class="plan-price-val"><small>KES </small>{{ number_format($plan->price_kes) }}</div>
-                            <div class="plan-price-period">per year, billed yearly</div>
-                            <div class="plan-price-period"><small style="font-size:10px;">KES </small>{{ number_format($plan->price_kes / 12) }} estimated monthly equivalent</div>
-                        @endif
-                    </div>
-
-                    <div class="plan-storage">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
-                        {{ $plan->storage_label }} / mailbox
-                    </div>
-                </div>
-            </div>
-            @endforeach
-
-            @foreach($sortedFeatureRows as $rowMeta)
-                @php $rowIndex = $rowMeta['rowIndex']; @endphp
-                @php $columnIndex = 0; @endphp
-                @while($columnIndex < $planCount)
-                    @php
-                        $rowFeature = $normalizedFeaturesByPlan->get($columnIndex)?->get($rowIndex);
-                        $spanCount = 1;
-                        while ($columnIndex + $spanCount < $planCount && ($normalizedFeaturesByPlan->get($columnIndex + $spanCount)?->get($rowIndex) === $rowFeature)) {
-                            $spanCount++;
-                        }
-                    @endphp
-
-                    @if($rowFeature === null)
-                        <div class="feature-gap" style="grid-column: {{ $columnIndex + 1 }} / span {{ $spanCount }};"></div>
-                    @else
-                        @php
-                            $spansFeaturedPlan = false;
-                            for ($featureCol = $columnIndex; $featureCol < $columnIndex + $spanCount; $featureCol++) {
-                                if ($plansList->get($featureCol)?->is_featured) {
-                                    $spansFeaturedPlan = true;
-                                    break;
-                                }
-                            }
-                        @endphp
-                        <div class="feature-pill {{ $spansFeaturedPlan ? 'feature-pill-featured' : '' }}"
-                             style="grid-column: {{ $columnIndex + 1 }} / span {{ $spanCount }};">
-                            <span class="plan-check">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                            </span>
-                            {{ $rowFeature }}
-                        </div>
-                    @endif
-
-                    @php $columnIndex += $spanCount; @endphp
-                @endwhile
-            @endforeach
-
-            @foreach($plansList as $plan)
-            <div class="plan-foot" @if($loop->last) style="border-right:none;" @endif>
-                <a href="{{ route('auth.register') }}"
-                   class="plan-cta {{ $plan->is_featured ? 'plan-cta-white' : 'plan-cta-outline' }}">
-                    {{ $plan->price_kes === 0 ? 'Start for free' : 'Get started' }}
-                </a>
-            </div>
-            @endforeach
-        </div>
-        </div>
-
-        <div class="pricing-mobile reveal">
-            @foreach($plansList as $plan)
-                <div class="mobile-plan-card">
-                    <div class="mobile-plan-name">{{ $plan->name }}</div>
-                    @if($plan->price_kes === 0)
-                        <div class="mobile-plan-price">Free</div>
-                        <div class="mobile-plan-meta">No credit card needed</div>
-                    @else
-                        <div class="mobile-plan-price">KES {{ number_format($plan->price_kes) }}</div>
-                        <div class="mobile-plan-meta">per year, billed yearly</div>
-                    @endif
-                    <a href="{{ route('auth.register') }}"
-                       class="plan-cta {{ $plan->is_featured ? 'plan-cta-white' : 'plan-cta-outline' }}">
-                        {{ $plan->price_kes === 0 ? 'Start for free' : 'Get started' }}
-                    </a>
-                </div>
-            @endforeach
-
-            <div class="mobile-service-list">
-                @foreach($sortedFeatureRows as $rowMeta)
-                    @php $rowIndex = $rowMeta['rowIndex']; @endphp
-                    @php $columnIndex = 0; @endphp
-                    @while($columnIndex < $planCount)
-                        @php
-                            $rowFeature = $normalizedFeaturesByPlan->get($columnIndex)?->get($rowIndex);
-                            $spanCount = 1;
-                            while ($columnIndex + $spanCount < $planCount && ($normalizedFeaturesByPlan->get($columnIndex + $spanCount)?->get($rowIndex) === $rowFeature)) {
-                                $spanCount++;
-                            }
-                        @endphp
-
-                        @if($rowFeature)
-                            <div class="mobile-service-row">
-                                <div class="mobile-service-text">{{ $rowFeature }}</div>
-                                <div class="mobile-service-plans">
-                                    @for($mobilePlanIndex = $columnIndex; $mobilePlanIndex < $columnIndex + $spanCount; $mobilePlanIndex++)
-                                        <span class="mobile-service-chip">{{ $plansList->get($mobilePlanIndex)?->name }}</span>
-                                    @endfor
-                                </div>
-                            </div>
-                        @endif
-
-                        @php $columnIndex += $spanCount; @endphp
-                    @endwhile
-                @endforeach
-            </div>
-        </div>
-        @endif
-
-        <p class="reveal" style="text-align:center;font-size:12.5px;font-weight:300;color:var(--text-3);margin-top:32px;">
-            All plans include auto-configured SPF, DKIM & DMARC records and unlimited mailboxes per domain.
-            Need a custom plan? <a href="mailto:hello@velinexlabs.com" style="color:var(--blue);">Contact us</a>.
-        </p>
-    </div>
-</section>
-
-<!-- CTA -->
-<section class="cta-section">
-    <div class="cta-geo">
-        <svg viewBox="0 0 420 400" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMaxYMid slice">
-            <line x1="0" y1="0" x2="420" y2="400" stroke="white" stroke-width="1"/>
-            <line x1="60" y1="0" x2="420" y2="340" stroke="white" stroke-width="1"/>
-            <line x1="120" y1="0" x2="420" y2="280" stroke="white" stroke-width="1"/>
-            <line x1="180" y1="0" x2="420" y2="220" stroke="white" stroke-width="1"/>
-            <line x1="240" y1="0" x2="420" y2="160" stroke="white" stroke-width="1"/>
-            <line x1="300" y1="0" x2="420" y2="100" stroke="white" stroke-width="1"/>
-            <line x1="360" y1="0" x2="420" y2="40"  stroke="white" stroke-width="1"/>
-            <circle cx="380" cy="80"  r="60"  stroke="white" stroke-width="1" fill="none"/>
-            <circle cx="380" cy="80"  r="110" stroke="white" stroke-width="1" fill="none"/>
-        </svg>
-    </div>
-    <div class="cta-ring"></div>
-    <div class="cta-ring-2"></div>
-    <div class="wrap">
-        <div class="cta-inner reveal">
-            <div class="cta-text">
-                <div class="cta-h2">Ready to take control<br>of your infrastructure?</div>
-                <p class="cta-sub">Join businesses across East Africa running their web and email on Velinex Cloud. Get started free — no credit card needed.</p>
-            </div>
-            <div class="cta-actions">
-                <a href="{{ route('auth.register') }}" class="cta-btn-primary">
-                    Start for free
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                </a>
-                <a href="{{ route('login') }}" class="cta-btn-secondary">Sign in to dashboard →</a>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Footer -->
-<footer class="footer">
-    <div class="wrap footer-inner">
-        <div class="footer-brand">
-            <img src="{{ asset('logo.svg') }}" alt="Velinex Cloud" class="nav-logo" style="width:102px;">
-        </div>
-        <span class="footer-copy">© {{ date('Y') }} Velinex Labs. All rights reserved.</span>
-        <div class="footer-links">
-            <a href="#">Privacy</a>
-            <a href="#">Terms</a>
-            <a href="{{ route('login') }}">Sign in</a>
-        </div>
-    </div>
-</footer>
+@include('welcome.partials.cta-footer')
 
 <script>
-    const io = new IntersectionObserver(entries => {
-        entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
-    }, { threshold: 0.08 });
-    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
-
-    (function () {
-        const mq = window.matchMedia('(max-width: 760px)');
-        const openBtn = document.getElementById('nav-menu-open');
-        const backdrop = document.getElementById('nav-drawer-backdrop');
-        const drawer = document.getElementById('nav-drawer');
-        if (!openBtn || !backdrop || !drawer) return;
-
-        function setOpen(open) {
-            document.body.classList.toggle('nav-drawer-open', open);
-            openBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
-            backdrop.setAttribute('aria-hidden', open ? 'false' : 'true');
-            drawer.setAttribute('aria-hidden', open ? 'false' : 'true');
-            document.body.style.overflow = open ? 'hidden' : '';
-        }
-
-        function closeIfMobile() {
-            if (mq.matches) setOpen(false);
-        }
-
-        openBtn.addEventListener('click', () => setOpen(!document.body.classList.contains('nav-drawer-open')));
-        backdrop.addEventListener('click', closeIfMobile);
-        drawer.querySelectorAll('a').forEach(a => {
-            a.addEventListener('click', () => closeIfMobile());
-        });
-        document.addEventListener('keydown', e => {
-            if (e.key === 'Escape') closeIfMobile();
-        });
-        if (mq.addEventListener) {
-            mq.addEventListener('change', e => { if (!e.matches) setOpen(false); });
-        } else if (mq.addListener) {
-            mq.addListener(e => { if (!e.matches) setOpen(false); });
-        }
-    })();
+    @include('welcome.partials.scripts')
 </script>
 </body>
 </html>
