@@ -659,6 +659,7 @@
         }
         .pricing-grid > :not(.plan-column-divider) { position: relative; z-index: 1; }
         .pricing-grid-scroll { overflow-x: auto; }
+        .pricing-mobile { display: none; }
         .plan-column-divider {
             position: absolute;
             top: 0;
@@ -791,6 +792,35 @@
         }
         .plan-cta-white:hover { background: var(--blue-2); box-shadow: 0 8px 24px rgba(var(--blue-rgb),0.24); transform: translateY(-1px); }
 
+        .mobile-plan-card {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: #fff;
+            padding: 14px;
+            margin-bottom: 10px;
+        }
+        .mobile-plan-name { font-size: 15px; font-weight: 500; color: var(--text); }
+        .mobile-plan-price { font-size: 20px; font-weight: 500; color: var(--text); margin: 3px 0 2px; }
+        .mobile-plan-meta { font-size: 11px; color: var(--text-3); margin-bottom: 10px; }
+        .mobile-service-list { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+        .mobile-service-row {
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: #fff;
+            padding: 9px 10px;
+        }
+        .mobile-service-text { font-size: 12px; color: var(--text-2); margin-bottom: 6px; }
+        .mobile-service-plans { display: flex; flex-wrap: wrap; gap: 6px; }
+        .mobile-service-chip {
+            font-size: 10.5px;
+            font-weight: 500;
+            border-radius: 999px;
+            padding: 3px 7px;
+            background: var(--blue-dim);
+            border: 1px solid var(--blue-mid);
+            color: #0a4d58;
+        }
+
         @media (max-width: 1080px) {
             .wrap { padding: 0 22px; }
             .hero-inner { grid-template-columns: 1fr; gap: 34px; }
@@ -841,7 +871,8 @@
             .feat-hero-icon { margin-bottom: 24px; }
             .pricing { padding: 70px 0; }
             .pricing-head { margin-bottom: 28px; }
-            .pricing-grid { min-width: calc(var(--plan-count) * 205px); }
+            .pricing-grid-scroll { display: none; }
+            .pricing-mobile { display: block; }
             .plan-head { min-height: 240px; }
             .plan-name { font-size: 15px; }
             .plan-price-val { font-size: 24px; }
@@ -1189,39 +1220,39 @@
         </div>
 
         @if($plans->isNotEmpty())
+        @php
+            $plansList = $plans->values();
+            $planCount = $plansList->count();
+            $normalizedFeaturesByPlan = $plansList->map(function ($plan) {
+                return collect($plan->features)->map(function ($feature) {
+                    $normalizedFeature = preg_replace('/\bunlimited\s+domains?\b/i', 'Domain service', $feature);
+                    $normalizedFeature = preg_replace('/\bup to\s+\d+\s+domains?\b/i', 'Domain service', $normalizedFeature);
+                    return preg_replace('/\b\d+\s+domains?\b/i', 'Domain service', $normalizedFeature);
+                })->values();
+            })->values();
+            $maxFeatureRows = $normalizedFeaturesByPlan->max(function ($items) {
+                return $items->count();
+            }) ?? 0;
+            $sortedFeatureRows = collect(range(0, max($maxFeatureRows - 1, 0)))->map(function ($rowIndex) use ($normalizedFeaturesByPlan, $planCount) {
+                $maxSpan = 0;
+                $columnIndex = 0;
+                while ($columnIndex < $planCount) {
+                    $rowFeature = $normalizedFeaturesByPlan->get($columnIndex)?->get($rowIndex);
+                    $spanCount = 1;
+                    while ($columnIndex + $spanCount < $planCount && ($normalizedFeaturesByPlan->get($columnIndex + $spanCount)?->get($rowIndex) === $rowFeature)) {
+                        $spanCount++;
+                    }
+                    if ($rowFeature !== null) {
+                        $maxSpan = max($maxSpan, $spanCount);
+                    }
+                    $columnIndex += $spanCount;
+                }
+                return ['rowIndex' => $rowIndex, 'maxSpan' => $maxSpan];
+            })->sortByDesc('maxSpan')->values();
+        @endphp
+
         <div class="pricing-grid-scroll reveal">
         <div class="pricing-grid" style="--plan-count: {{ $plans->count() }};">
-            @php
-                $plansList = $plans->values();
-                $planCount = $plansList->count();
-                $normalizedFeaturesByPlan = $plansList->map(function ($plan) {
-                    return collect($plan->features)->map(function ($feature) {
-                        $normalizedFeature = preg_replace('/\bunlimited\s+domains?\b/i', 'Domain service', $feature);
-                        $normalizedFeature = preg_replace('/\bup to\s+\d+\s+domains?\b/i', 'Domain service', $normalizedFeature);
-                        return preg_replace('/\b\d+\s+domains?\b/i', 'Domain service', $normalizedFeature);
-                    })->values();
-                })->values();
-                $maxFeatureRows = $normalizedFeaturesByPlan->max(function ($items) {
-                    return $items->count();
-                }) ?? 0;
-                $sortedFeatureRows = collect(range(0, max($maxFeatureRows - 1, 0)))->map(function ($rowIndex) use ($normalizedFeaturesByPlan, $planCount) {
-                    $maxSpan = 0;
-                    $columnIndex = 0;
-                    while ($columnIndex < $planCount) {
-                        $rowFeature = $normalizedFeaturesByPlan->get($columnIndex)?->get($rowIndex);
-                        $spanCount = 1;
-                        while ($columnIndex + $spanCount < $planCount && ($normalizedFeaturesByPlan->get($columnIndex + $spanCount)?->get($rowIndex) === $rowFeature)) {
-                            $spanCount++;
-                        }
-                        if ($rowFeature !== null) {
-                            $maxSpan = max($maxSpan, $spanCount);
-                        }
-                        $columnIndex += $spanCount;
-                    }
-                    return ['rowIndex' => $rowIndex, 'maxSpan' => $maxSpan];
-                })->sortByDesc('maxSpan')->values();
-            @endphp
-
             @for($dividerIndex = 1; $dividerIndex < $planCount; $dividerIndex++)
                 <div class="plan-column-divider" style="left: {{ ($dividerIndex / $planCount) * 100 }}%;"></div>
             @endfor
@@ -1302,6 +1333,54 @@
             </div>
             @endforeach
         </div>
+        </div>
+
+        <div class="pricing-mobile reveal">
+            @foreach($plansList as $plan)
+                <div class="mobile-plan-card">
+                    <div class="mobile-plan-name">{{ $plan->name }}</div>
+                    @if($plan->price_kes === 0)
+                        <div class="mobile-plan-price">Free</div>
+                        <div class="mobile-plan-meta">No credit card needed</div>
+                    @else
+                        <div class="mobile-plan-price">KES {{ number_format($plan->price_kes) }}</div>
+                        <div class="mobile-plan-meta">per year, billed yearly</div>
+                    @endif
+                    <a href="{{ route('auth.register') }}"
+                       class="plan-cta {{ $plan->is_featured ? 'plan-cta-white' : 'plan-cta-outline' }}">
+                        {{ $plan->price_kes === 0 ? 'Start for free' : 'Get started' }}
+                    </a>
+                </div>
+            @endforeach
+
+            <div class="mobile-service-list">
+                @foreach($sortedFeatureRows as $rowMeta)
+                    @php $rowIndex = $rowMeta['rowIndex']; @endphp
+                    @php $columnIndex = 0; @endphp
+                    @while($columnIndex < $planCount)
+                        @php
+                            $rowFeature = $normalizedFeaturesByPlan->get($columnIndex)?->get($rowIndex);
+                            $spanCount = 1;
+                            while ($columnIndex + $spanCount < $planCount && ($normalizedFeaturesByPlan->get($columnIndex + $spanCount)?->get($rowIndex) === $rowFeature)) {
+                                $spanCount++;
+                            }
+                        @endphp
+
+                        @if($rowFeature)
+                            <div class="mobile-service-row">
+                                <div class="mobile-service-text">{{ $rowFeature }}</div>
+                                <div class="mobile-service-plans">
+                                    @for($mobilePlanIndex = $columnIndex; $mobilePlanIndex < $columnIndex + $spanCount; $mobilePlanIndex++)
+                                        <span class="mobile-service-chip">{{ $plansList->get($mobilePlanIndex)?->name }}</span>
+                                    @endfor
+                                </div>
+                            </div>
+                        @endif
+
+                        @php $columnIndex += $spanCount; @endphp
+                    @endwhile
+                @endforeach
+            </div>
         </div>
         @endif
 
