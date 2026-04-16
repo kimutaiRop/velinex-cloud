@@ -19,10 +19,11 @@
             --text:       #0d1117;
             --text-2:     #4b5563;
             --text-3:     #9ca3af;
-            --blue:       #1a6cf0;
-            --blue-2:     #1558cc;
-            --blue-dim:   rgba(26,108,240,0.07);
-            --blue-mid:   rgba(26,108,240,0.15);
+            --blue:       #3eecff;
+            --blue-2:     #19c7dc;
+            --blue-rgb:   62,236,255;
+            --blue-dim:   rgba(var(--blue-rgb),0.10);
+            --blue-mid:   rgba(var(--blue-rgb),0.22);
             --green:      #059669;
             --green-dim:  rgba(5,150,105,0.08);
             --border:     rgba(0,0,0,0.07);
@@ -70,8 +71,8 @@
         .nav-links { display: flex; align-items: center; gap: 2px; }
         .nav-link { padding: 5px 12px; font-size: 13px; font-weight: 300; color: var(--text-2); border-radius: 5px; transition: color .12s, background .12s; }
         .nav-link:hover { color: var(--text); background: var(--bg-2); }
-        .nav-btn { padding: 6px 16px; font-size: 13px; font-weight: 400; background: var(--blue); color: #fff; border: none; border-radius: 5px; display: inline-block; transition: background .12s, box-shadow .12s; }
-        .nav-btn:hover { background: var(--blue-2); box-shadow: 0 2px 10px rgba(26,108,240,0.3); }
+        .nav-btn { padding: 6px 16px; font-size: 13px; font-weight: 400; background: var(--blue); color: #05242b; border: none; border-radius: 5px; display: inline-block; transition: background .12s, box-shadow .12s; }
+        .nav-btn:hover { background: var(--blue-2); box-shadow: 0 2px 10px rgba(var(--blue-rgb),0.3); }
         .nav-login { font-size: 13px; font-weight: 300; color: var(--text-2); padding: 6px 12px; transition: color .12s; }
         .nav-login:hover { color: var(--blue); }
 
@@ -89,7 +90,7 @@
             top: -120px; right: -120px;
             width: 560px; height: 560px;
             border-radius: 50%;
-            border: 1.5px solid rgba(26,108,240,0.10);
+            border: 1.5px solid rgba(var(--blue-rgb),0.10);
             pointer-events: none;
         }
         .hero-ring-2 {
@@ -97,7 +98,7 @@
             top: -60px; right: -60px;
             width: 380px; height: 380px;
             border-radius: 50%;
-            border: 1px solid rgba(26,108,240,0.07);
+            border: 1px solid rgba(var(--blue-rgb),0.07);
             pointer-events: none;
         }
         .hero-ring-3 {
@@ -105,7 +106,7 @@
             top: 20px; right: 20px;
             width: 200px; height: 200px;
             border-radius: 50%;
-            border: 1px solid rgba(26,108,240,0.05);
+            border: 1px solid rgba(var(--blue-rgb),0.05);
             pointer-events: none;
         }
 
@@ -114,7 +115,7 @@
             position: absolute;
             bottom: -40px; left: -60px;
             width: 500px; height: 220px;
-            background: linear-gradient(135deg, rgba(26,108,240,0.04) 0%, transparent 60%);
+            background: linear-gradient(135deg, rgba(var(--blue-rgb),0.06) 0%, transparent 60%);
             transform: skewY(-8deg);
             pointer-events: none;
         }
@@ -157,12 +158,12 @@
 
         .btn-primary {
             display: inline-flex; align-items: center; gap: 6px;
-            padding: 10px 22px; background: var(--blue); color: #fff;
+            padding: 10px 22px; background: var(--blue); color: #05242b;
             font-size: 13px; font-weight: 400; border: none; border-radius: 6px;
-            box-shadow: 0 2px 10px rgba(26,108,240,0.25);
+            box-shadow: 0 2px 10px rgba(var(--blue-rgb),0.25);
             transition: background .13s, box-shadow .13s, transform .13s;
         }
-        .btn-primary:hover { background: var(--blue-2); box-shadow: 0 4px 18px rgba(26,108,240,0.35); transform: translateY(-1px); }
+        .btn-primary:hover { background: var(--blue-2); box-shadow: 0 4px 18px rgba(var(--blue-rgb),0.35); transform: translateY(-1px); }
         .btn-primary svg { width: 13px; height: 13px; }
 
         .btn-secondary {
@@ -330,7 +331,7 @@
             position: absolute;
             top: 0; right: -100px;
             width: 500px; height: 100%;
-            background: linear-gradient(135deg, transparent 40%, rgba(26,108,240,0.025) 100%);
+            background: linear-gradient(135deg, transparent 40%, rgba(var(--blue-rgb),0.06) 100%);
             transform: skewX(-8deg);
             pointer-events: none;
         }
@@ -535,7 +536,7 @@
             font-size: 12px; font-weight: 400; color: var(--blue);
             display: flex; align-items: center; justify-content: center;
             margin-bottom: 22px; position: relative; z-index: 1;
-            box-shadow: 0 0 0 4px rgba(26,108,240,0.08);
+            box-shadow: 0 0 0 4px rgba(var(--blue-rgb),0.10);
         }
 
         .step-title { font-size: 15px; font-weight: 400; color: var(--text); margin-bottom: 8px; letter-spacing: -0.01em; }
@@ -663,7 +664,7 @@
         }
         .plan-card:last-child { border-right: none; }
         .plan-card.featured {
-            background: linear-gradient(180deg, rgba(26,108,240,0.04) 0%, rgba(26,108,240,0.08) 100%);
+            background: linear-gradient(180deg, rgba(var(--blue-rgb),0.09) 0%, rgba(var(--blue-rgb),0.16) 100%);
         }
 
         .plan-head {
@@ -675,8 +676,8 @@
             flex-direction: column;
         }
         .featured .plan-head {
-            background: rgba(26,108,240,0.1);
-            border-bottom-color: rgba(26,108,240,0.2);
+            background: rgba(var(--blue-rgb),0.16);
+            border-bottom-color: rgba(var(--blue-rgb),0.28);
         }
 
         .plan-badge {
@@ -690,8 +691,8 @@
             font-size: 10px; font-weight: 400;
             margin-bottom: 0;
             color: var(--blue);
-            background: rgba(26,108,240,0.1);
-            border: 1px solid rgba(26,108,240,0.18);
+            background: rgba(var(--blue-rgb),0.18);
+            border: 1px solid rgba(var(--blue-rgb),0.28);
         }
         .plan-name {
             font-size: 17px; font-weight: 500; color: var(--text);
@@ -725,9 +726,9 @@
             margin-top: auto;
         }
         .featured .plan-storage {
-            border-color: rgba(26,108,240,0.28);
-            background: rgba(26,108,240,0.08);
-            color: var(--blue);
+            border-color: rgba(var(--blue-rgb),0.35);
+            background: rgba(var(--blue-rgb),0.16);
+            color: #0a4d58;
         }
         .plan-storage svg { width: 10px; height: 10px; }
 
@@ -745,10 +746,15 @@
             margin-top: 10px;
         }
         .feature-pill-featured {
-            border-color: rgba(26,108,240,0.2);
+            border-color: rgba(var(--blue-rgb),0.3);
             background: rgba(255,255,255,0.88);
         }
         .feature-gap { min-height: 34px; }
+        .feature-row-divider {
+            grid-column: 1 / -1;
+            border-top: 1px dashed rgba(15,23,42,0.16);
+            margin: 0 12px;
+        }
         .plan-check {
             width: 15px; height: 15px; border-radius: 50%;
             background: rgba(255,96,67,0.1); color: #f2573e;
@@ -775,9 +781,9 @@
             background: var(--blue);
             color: #fff;
             border: 1px solid transparent;
-            box-shadow: 0 5px 18px rgba(26,108,240,0.18);
+            box-shadow: 0 5px 18px rgba(var(--blue-rgb),0.2);
         }
-        .plan-cta-white:hover { background: #1f61cf; box-shadow: 0 8px 24px rgba(26,108,240,0.24); transform: translateY(-1px); }
+        .plan-cta-white:hover { background: var(--blue-2); box-shadow: 0 8px 24px rgba(var(--blue-rgb),0.24); transform: translateY(-1px); }
 
         @media (max-width: 1080px) {
             .pricing-grid { min-width: calc(var(--plan-count) * 220px); }
@@ -1113,10 +1119,10 @@
         <div class="pricing-head reveal">
             <div class="section-eyebrow">Pricing</div>
             <h2 class="section-h2">Simple, transparent pricing.</h2>
-            <p class="section-sub">Host with us and get <strong>unlimited mailboxes per domain</strong> on every plan. Clear monthly and yearly pricing for each service tier.</p>
+            <p class="section-sub">Host with us and get <strong>unlimited mailboxes per domain</strong> on every plan. Works with Gmail, Outlook, and Apple Mail on mobile and desktop — no custom app required.</p>
             <div class="pricing-note">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                Unlimited mailboxes included on all plans — no per-seat fees
+                Unlimited mailboxes included on all plans — no per-seat fees, no custom app lock-in
             </div>
         </div>
 
@@ -1136,6 +1142,22 @@
                 $maxFeatureRows = $normalizedFeaturesByPlan->max(function ($items) {
                     return $items->count();
                 }) ?? 0;
+                $sortedFeatureRows = collect(range(0, max($maxFeatureRows - 1, 0)))->map(function ($rowIndex) use ($normalizedFeaturesByPlan, $planCount) {
+                    $maxSpan = 0;
+                    $columnIndex = 0;
+                    while ($columnIndex < $planCount) {
+                        $rowFeature = $normalizedFeaturesByPlan->get($columnIndex)?->get($rowIndex);
+                        $spanCount = 1;
+                        while ($columnIndex + $spanCount < $planCount && ($normalizedFeaturesByPlan->get($columnIndex + $spanCount)?->get($rowIndex) === $rowFeature)) {
+                            $spanCount++;
+                        }
+                        if ($rowFeature !== null) {
+                            $maxSpan = max($maxSpan, $spanCount);
+                        }
+                        $columnIndex += $spanCount;
+                    }
+                    return ['rowIndex' => $rowIndex, 'maxSpan' => $maxSpan];
+                })->sortByDesc('maxSpan')->values();
             @endphp
 
             @foreach($plansList as $plan)
@@ -1168,7 +1190,8 @@
             </div>
             @endforeach
 
-            @for($rowIndex = 0; $rowIndex < $maxFeatureRows; $rowIndex++)
+            @foreach($sortedFeatureRows as $rowMeta)
+                @php $rowIndex = $rowMeta['rowIndex']; @endphp
                 @php $columnIndex = 0; @endphp
                 @while($columnIndex < $planCount)
                     @php
@@ -1202,7 +1225,10 @@
 
                     @php $columnIndex += $spanCount; @endphp
                 @endwhile
-            @endfor
+                @if(!$loop->last)
+                    <div class="feature-row-divider"></div>
+                @endif
+            @endforeach
 
             @foreach($plansList as $plan)
             <div class="plan-foot" @if($loop->last) style="border-right:none;" @endif>
