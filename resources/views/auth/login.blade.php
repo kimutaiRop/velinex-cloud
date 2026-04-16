@@ -13,8 +13,8 @@
         </div>
     </div>
 
-    <div class="auth-title">Welcome back</div>
-    <div class="auth-sub">Sign in to manage your mail infrastructure.</div>
+    <div class="auth-title">Client portal login</div>
+    <div class="auth-sub">Sign in to manage your domains, DNS setup, and business mailboxes.</div>
 
     @if($errors->any())
         <div class="alert alert-error" style="margin-bottom: 18px;">
@@ -28,9 +28,9 @@
     <form method="post" action="{{ route('auth.login.attempt') }}">
         @csrf
         <div class="form-group" style="margin-bottom: 14px;">
-            <label for="email" class="form-label">Email</label>
-            <input id="email" name="email" type="email" required value="{{ old('email') }}"
-                   placeholder="you@example.com" autofocus class="form-input">
+            <label for="login" class="form-label">Email or Username</label>
+            <input id="login" name="login" type="text" required value="{{ old('login') }}"
+                   placeholder="you@example.com or username" autofocus class="form-input">
         </div>
         <div class="form-group" style="margin-bottom: 22px;">
             <label for="password" class="form-label">Password</label>
@@ -46,7 +46,7 @@
     </form>
 
     <div class="auth-footer">
-        No account? <a href="{{ route('auth.register') }}">Create one</a>
+        New client? <a href="{{ route('auth.register') }}">Create account</a>
     </div>
 
 </div>

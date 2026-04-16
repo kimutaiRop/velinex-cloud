@@ -14,6 +14,7 @@ class InitialAdminSeeder extends Seeder
     {
         $clientName = env('INITIAL_ADMIN_CLIENT_NAME', 'Velinex Labs');
         $adminName = env('INITIAL_ADMIN_NAME', 'Velinex Admin');
+        $adminUsername = env('INITIAL_ADMIN_USERNAME', 'velinexadmin');
         $adminEmail = env('INITIAL_ADMIN_EMAIL', 'admin@velinexlabs.com');
         $adminPassword = env('INITIAL_ADMIN_PASSWORD', 'ChangeMeNow!2026');
 
@@ -26,6 +27,7 @@ class InitialAdminSeeder extends Seeder
             ['email' => $adminEmail],
             [
                 'name' => $adminName,
+                'username' => strtolower($adminUsername),
                 'password' => Hash::make($adminPassword),
                 'client_id' => $client->id,
             ]

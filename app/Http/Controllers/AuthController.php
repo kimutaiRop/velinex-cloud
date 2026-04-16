@@ -21,14 +21,16 @@ class AuthController extends Controller
     public function login(Request $request): RedirectResponse
     {
         $credentials = $request->validate([
-            'email' => ['required', 'email'],
+            'login' => ['required', 'string', 'max:190'],
             'password' => ['required', 'string'],
         ]);
 
-        if (!Auth::attempt($credentials, true)) {
+        $field = filter_var($credentials['login'], FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+
+        if (!Auth::attempt([$field => $credentials['login'], 'password' => $credentials['password']], true)) {
             return back()->withErrors([
-                'email' => 'Invalid login details.',
-            ])->onlyInput('email');
+                'login' => 'Invalid login details.',
+            ])->onlyInput('login');
         }
 
         $request->session()->regenerate();
@@ -45,6 +47,7 @@ class AuthController extends Controller
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:120'],
+            'username' => ['required', 'string', 'max:40', 'regex:/^[a-zA-Z0-9._-]+$/', 'unique:users,username'],
             'client_name' => ['required', 'string', 'max:150'],
             'email' => ['required', 'email', 'max:190', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
@@ -57,6 +60,7 @@ class AuthController extends Controller
 
         $user = User::create([
             'name' => $validated['name'],
+            'username' => strtolower($validated['username']),
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
             'client_id' => $client->id,

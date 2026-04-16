@@ -13,8 +13,8 @@
         </div>
     </div>
 
-    <div class="auth-title">Create your account</div>
-    <div class="auth-sub">Get started with your mail hosting dashboard.</div>
+    <div class="auth-title">Create client account</div>
+    <div class="auth-sub">Register your company and start managing hosted business mail.</div>
 
     @if($errors->any())
         <div class="alert alert-error" style="margin-bottom: 18px;">
@@ -44,6 +44,11 @@
                 <label for="email" class="form-label">Email</label>
                 <input id="email" name="email" type="email" required value="{{ old('email') }}"
                        placeholder="you@example.com" class="form-input">
+            </div>
+            <div class="form-group">
+                <label for="username" class="form-label">Username</label>
+                <input id="username" name="username" required value="{{ old('username') }}"
+                       placeholder="yourusername" class="form-input">
             </div>
             <div class="form-group">
                 <label for="password" class="form-label">Password</label>
