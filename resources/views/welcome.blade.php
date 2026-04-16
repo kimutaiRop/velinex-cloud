@@ -666,7 +666,7 @@
             width: 1px;
             background: var(--border);
             pointer-events: none;
-            z-index: 0;
+            z-index: 3;
         }
         .plan-card {
             border-right: 1px solid var(--border);
@@ -761,11 +761,6 @@
             background: rgba(255,255,255,0.88);
         }
         .feature-gap { min-height: 34px; }
-        .feature-row-divider {
-            grid-column: 1 / -1;
-            border-top: 1px dashed rgba(15,23,42,0.16);
-            margin: 0 12px;
-        }
         .plan-check {
             width: 15px; height: 15px; border-radius: 50%;
             background: rgba(255,96,67,0.1); color: #f2573e;
@@ -1240,9 +1235,6 @@
 
                     @php $columnIndex += $spanCount; @endphp
                 @endwhile
-                @if(!$loop->last)
-                    <div class="feature-row-divider"></div>
-                @endif
             @endforeach
 
             @foreach($plansList as $plan)
