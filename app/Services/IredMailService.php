@@ -134,6 +134,20 @@ class IredMailService
         }
     }
 
+    public function updateMailboxQuota(string $email, int $quotaMb): void
+    {
+        $updated = DB::connection('iredmail')->table('mailbox')
+            ->where('username', strtolower($email))
+            ->update([
+                'quota' => $quotaMb,
+                'modified' => now()->toDateTimeString(),
+            ]);
+
+        if ($updated === 0) {
+            throw new RuntimeException('Mailbox not found in iRedMail.');
+        }
+    }
+
     public function deleteMailbox(string $email): void
     {
         DB::connection('iredmail')->table('mailbox')

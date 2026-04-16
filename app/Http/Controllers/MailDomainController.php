@@ -51,6 +51,7 @@ class MailDomainController extends Controller
         $user = Auth::user();
 
         return view('mail.domains', [
+            'plans' => MailPlan::active()->get(),
             'domains' => Domain::with(['client', 'dnsRecords', 'mailboxes'])
                 ->with('mailPlan')
                 ->where('client_id', $user->client_id)
@@ -216,6 +217,46 @@ class MailDomainController extends Controller
         $domain->delete();
 
         return redirect()->route('mail.domains.manage')->with('status', 'Domain deleted.');
+    }
+
+    public function updatePlan(Request $request, Domain $domain): RedirectResponse
+    {
+        abort_if($domain->client_id !== Auth::user()->client_id, 403);
+
+        $validated = $request->validate([
+            'mail_plan_id' => ['required', Rule::exists('mail_plans', 'id')->where(fn ($query) => $query->where('is_active', true))],
+        ]);
+
+        $targetPlan = MailPlan::query()->findOrFail((int) $validated['mail_plan_id']);
+        $domain->mail_plan_id = $targetPlan->id;
+        $domain->save();
+
+        $updatedCount = 0;
+        $failed = [];
+        $targetQuota = (int) $targetPlan->storage_mb;
+
+        foreach ($domain->mailboxes()->get() as $mailbox) {
+            $newQuota = min((int) $mailbox->quota_mb, $targetQuota);
+
+            try {
+                $this->iredMailService->updateMailboxQuota($mailbox->email, $newQuota);
+            } catch (RuntimeException $e) {
+                $failed[] = $mailbox->email;
+                continue;
+            }
+
+            if ((int) $mailbox->quota_mb !== $newQuota) {
+                $mailbox->quota_mb = $newQuota;
+                $mailbox->save();
+            }
+            $updatedCount++;
+        }
+
+        if (!empty($failed)) {
+            return back()->with('status', 'Plan updated, but quota sync failed for: ' . implode(', ', $failed));
+        }
+
+        return back()->with('status', "Plan updated to {$targetPlan->name}. Synced {$updatedCount} mailbox quota(s).");
     }
 }
 

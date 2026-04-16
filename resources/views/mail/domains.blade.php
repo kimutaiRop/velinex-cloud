@@ -47,6 +47,15 @@
                                 <div class="action-row">
                                     <a href="{{ route('mail.domains.show', $domain) }}" class="btn btn-outline">DNS</a>
                                     <a href="{{ route('mail.domains.mailboxes', $domain) }}" class="btn btn-ghost">Email</a>
+                                    <form method="post" action="{{ route('mail.domains.plan', $domain) }}" style="display:flex;align-items:center;gap:6px;">
+                                        @csrf
+                                        <select name="mail_plan_id" class="form-input" style="width:130px;height:32px;padding:4px 8px;">
+                                            @foreach($plans as $plan)
+                                                <option value="{{ $plan->id }}" @selected($domain->mail_plan_id === $plan->id)>{{ $plan->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        <button type="submit" class="btn btn-outline">Update Plan</button>
+                                    </form>
                                     <form method="post" action="{{ route('mail.domains.toggle', $domain) }}">
                                         @csrf
                                         <button type="submit" class="btn btn-ghost">{{ $domain->status === 'disabled' ? 'Enable' : 'Disable' }}</button>

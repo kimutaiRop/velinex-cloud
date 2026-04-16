@@ -53,6 +53,7 @@ Route::middleware(['log.auth', 'auth'])->group(function () {
         Route::get('/domains/{domain}/mailboxes', [MailDomainController::class, 'mailboxes'])->name('domains.mailboxes');
         Route::post('/domains/{domain}/verify', [MailDomainController::class, 'verify'])->name('domains.verify');
         Route::post('/domains/{domain}/toggle', [MailDomainController::class, 'toggleDomain'])->name('domains.toggle');
+        Route::post('/domains/{domain}/plan', [MailDomainController::class, 'updatePlan'])->name('domains.plan');
         Route::delete('/domains/{domain}', [MailDomainController::class, 'destroy'])->name('domains.destroy');
         Route::post('/domains/{domain}/mailboxes', [MailboxController::class, 'store'])->name('mailboxes.store');
         Route::post('/mailboxes/{mailbox}/password', [MailboxController::class, 'updatePassword'])->name('mailboxes.password');
