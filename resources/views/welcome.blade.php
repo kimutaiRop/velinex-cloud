@@ -655,8 +655,19 @@
             overflow: hidden;
             box-shadow: var(--shadow-sm);
             min-width: calc(var(--plan-count) * 235px);
+            position: relative;
         }
+        .pricing-grid > :not(.plan-column-divider) { position: relative; z-index: 1; }
         .pricing-grid-scroll { overflow-x: auto; }
+        .plan-column-divider {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: var(--border);
+            pointer-events: none;
+            z-index: 0;
+        }
         .plan-card {
             border-right: 1px solid var(--border);
             background: transparent;
@@ -1159,6 +1170,10 @@
                     return ['rowIndex' => $rowIndex, 'maxSpan' => $maxSpan];
                 })->sortByDesc('maxSpan')->values();
             @endphp
+
+            @for($dividerIndex = 1; $dividerIndex < $planCount; $dividerIndex++)
+                <div class="plan-column-divider" style="left: {{ ($dividerIndex / $planCount) * 100 }}%;"></div>
+            @endfor
 
             @foreach($plansList as $plan)
             <div class="plan-card {{ $plan->is_featured ? 'featured' : '' }}" @if($loop->last) style="border-right:none;" @endif>
