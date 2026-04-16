@@ -57,7 +57,16 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label">Quota (MB)</label>
-                        <input name="quota_mb" type="number" min="128" value="1024" required class="form-input">
+                        <input name="quota_mb"
+                               type="number"
+                               min="128"
+                               max="{{ $domain->mailPlan?->storage_mb ?? 1024 }}"
+                               value="{{ min(1024, (int) ($domain->mailPlan?->storage_mb ?? 1024)) }}"
+                               required
+                               class="form-input">
+                        <div style="font-size:11px;color:var(--text-muted);margin-top:6px;">
+                            Plan limit per mailbox: {{ $domain->mailPlan?->storage_label ?? 'N/A' }}
+                        </div>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Initial Reset</label>

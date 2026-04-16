@@ -24,10 +24,17 @@ class MailboxController extends Controller
     public function store(Request $request, Domain $domain): RedirectResponse
     {
         $this->authorizeDomain($domain);
+        $domain->loadMissing('mailPlan');
 
         if ($domain->status !== 'verified') {
             return back()->with('status', 'Domain must be verified before creating mailboxes.');
         }
+
+        if (!$domain->mailPlan) {
+            return back()->with('status', 'Domain has no assigned plan. Assign a plan before creating mailboxes.');
+        }
+
+        $planStorageMb = (int) $domain->mailPlan->storage_mb;
 
         $validated = $request->validate([
             'local_part' => ['required', 'string', 'max:120', 'regex:/^[a-z0-9._-]+$/i'],
@@ -36,7 +43,7 @@ class MailboxController extends Controller
             'password' => ['nullable', 'string', 'min:8'],
             'secondary_email' => ['nullable', 'email', 'max:190'],
             'require_initial_reset' => ['nullable', 'boolean'],
-            'quota_mb' => ['required', 'integer', 'min:128', 'max:102400'],
+            'quota_mb' => ['required', 'integer', 'min:128', 'max:' . $planStorageMb],
         ]);
 
         if ($validated['password_mode'] === 'manual' && empty($validated['password'])) {
