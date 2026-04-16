@@ -647,17 +647,16 @@
         /* Matrix-style pricing board inspired by registrar product tables */
         .pricing-grid {
             display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
+            grid-template-columns: repeat(var(--plan-count), minmax(0, 1fr));
             background: #fff;
             border: 1px solid var(--border);
             border-radius: 14px;
             overflow: hidden;
             box-shadow: var(--shadow-sm);
+            min-width: calc(var(--plan-count) * 235px);
         }
+        .pricing-grid-scroll { overflow-x: auto; }
         .plan-card {
-            display: flex;
-            flex-direction: column;
-            min-height: 100%;
             border-right: 1px solid var(--border);
             background: transparent;
             position: relative;
@@ -732,16 +731,7 @@
         }
         .plan-storage svg { width: 10px; height: 10px; }
 
-        .plan-features {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            padding: 16px 18px 20px;
-            margin: 0;
-            flex: 1;
-        }
-        .plan-features li {
+        .feature-pill {
             display: flex; align-items: center; gap: 8px;
             border: 1px solid var(--border);
             background: #fff;
@@ -751,11 +741,14 @@
             font-weight: 300;
             color: var(--text-2);
             line-height: 1.25;
+            margin: 8px;
+            margin-top: 10px;
         }
-        .featured .plan-features li {
+        .feature-pill-featured {
             border-color: rgba(26,108,240,0.2);
             background: rgba(255,255,255,0.88);
         }
+        .feature-gap { min-height: 34px; }
         .plan-check {
             width: 15px; height: 15px; border-radius: 50%;
             background: rgba(255,96,67,0.1); color: #f2573e;
@@ -765,8 +758,9 @@
         .plan-check svg { width: 7px; height: 7px; }
 
         .plan-foot {
-            margin-top: auto;
-            padding: 0 18px 18px;
+            padding: 14px 18px 18px;
+            border-top: 1px solid var(--border);
+            border-right: 1px solid var(--border);
         }
         .plan-cta {
             display: block; text-align: center;
@@ -786,14 +780,7 @@
         .plan-cta-white:hover { background: #1f61cf; box-shadow: 0 8px 24px rgba(26,108,240,0.24); transform: translateY(-1px); }
 
         @media (max-width: 1080px) {
-            .pricing-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-            .plan-card:nth-child(2n) { border-right: none; }
-            .plan-card:nth-child(n+3) { border-top: 1px solid var(--border); }
-        }
-        @media (max-width: 680px) {
-            .pricing-grid { grid-template-columns: 1fr; }
-            .plan-card { border-right: none; border-top: 1px solid var(--border); }
-            .plan-card:first-child { border-top: none; }
+            .pricing-grid { min-width: calc(var(--plan-count) * 220px); }
         }
 
         /* ─── Reveal ─── */
@@ -1126,7 +1113,7 @@
         <div class="pricing-head reveal">
             <div class="section-eyebrow">Pricing</div>
             <h2 class="section-h2">Simple, transparent pricing.</h2>
-            <p class="section-sub">Host with us and get <strong>unlimited mailboxes per domain</strong> on every plan. Pricing is per single domain service on each plan.</p>
+            <p class="section-sub">Host with us and get <strong>unlimited mailboxes per domain</strong> on every plan. Clear monthly and yearly pricing for each service tier.</p>
             <div class="pricing-note">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                 Unlimited mailboxes included on all plans — no per-seat fees
@@ -1134,9 +1121,25 @@
         </div>
 
         @if($plans->isNotEmpty())
-        <div class="pricing-grid reveal">
-            @foreach($plans as $plan)
-            <div class="plan-card {{ $plan->is_featured ? 'featured' : '' }}">
+        <div class="pricing-grid-scroll reveal">
+        <div class="pricing-grid" style="--plan-count: {{ $plans->count() }};">
+            @php
+                $plansList = $plans->values();
+                $planCount = $plansList->count();
+                $normalizedFeaturesByPlan = $plansList->map(function ($plan) {
+                    return collect($plan->features)->map(function ($feature) {
+                        $normalizedFeature = preg_replace('/\bunlimited\s+domains?\b/i', 'Domain service', $feature);
+                        $normalizedFeature = preg_replace('/\bup to\s+\d+\s+domains?\b/i', 'Domain service', $normalizedFeature);
+                        return preg_replace('/\b\d+\s+domains?\b/i', 'Domain service', $normalizedFeature);
+                    })->values();
+                })->values();
+                $maxFeatureRows = $normalizedFeaturesByPlan->max(function ($items) {
+                    return $items->count();
+                }) ?? 0;
+            @endphp
+
+            @foreach($plansList as $plan)
+            <div class="plan-card {{ $plan->is_featured ? 'featured' : '' }}" @if($loop->last) style="border-right:none;" @endif>
                 <div class="plan-head">
                     @if($plan->is_featured)
                         <div class="plan-badge">Most popular</div>
@@ -1162,36 +1165,59 @@
                         {{ $plan->storage_label }} / mailbox
                     </div>
                 </div>
-
-                <ul class="plan-features">
-                    @foreach($plan->features as $feature)
-                    @php
-                        $normalizedFeature = preg_replace('/\bunlimited\s+domains?\b/i', '1 domain', $feature);
-                        $normalizedFeature = preg_replace('/\bup to\s+\d+\s+domains?\b/i', '1 domain', $normalizedFeature);
-                        $normalizedFeature = preg_replace('/\b\d+\s+domains?\b/i', '1 domain', $normalizedFeature);
-                    @endphp
-                    <li>
-                        <span class="plan-check">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                        </span>
-                        {{ $normalizedFeature }}
-                    </li>
-                    @endforeach
-                </ul>
-
-                <div class="plan-foot">
-                    <a href="{{ route('auth.register') }}"
-                       class="plan-cta {{ $plan->is_featured ? 'plan-cta-white' : 'plan-cta-outline' }}">
-                        {{ $plan->price_kes === 0 ? 'Start for free' : 'Get started' }}
-                    </a>
-                </div>
             </div>
             @endforeach
+
+            @for($rowIndex = 0; $rowIndex < $maxFeatureRows; $rowIndex++)
+                @php $columnIndex = 0; @endphp
+                @while($columnIndex < $planCount)
+                    @php
+                        $rowFeature = $normalizedFeaturesByPlan->get($columnIndex)?->get($rowIndex);
+                        $spanCount = 1;
+                        while ($columnIndex + $spanCount < $planCount && ($normalizedFeaturesByPlan->get($columnIndex + $spanCount)?->get($rowIndex) === $rowFeature)) {
+                            $spanCount++;
+                        }
+                    @endphp
+
+                    @if($rowFeature === null)
+                        <div class="feature-gap" style="grid-column: {{ $columnIndex + 1 }} / span {{ $spanCount }};"></div>
+                    @else
+                        @php
+                            $spansFeaturedPlan = false;
+                            for ($featureCol = $columnIndex; $featureCol < $columnIndex + $spanCount; $featureCol++) {
+                                if ($plansList->get($featureCol)?->is_featured) {
+                                    $spansFeaturedPlan = true;
+                                    break;
+                                }
+                            }
+                        @endphp
+                        <div class="feature-pill {{ $spansFeaturedPlan ? 'feature-pill-featured' : '' }}"
+                             style="grid-column: {{ $columnIndex + 1 }} / span {{ $spanCount }};">
+                            <span class="plan-check">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                            </span>
+                            {{ $rowFeature }}
+                        </div>
+                    @endif
+
+                    @php $columnIndex += $spanCount; @endphp
+                @endwhile
+            @endfor
+
+            @foreach($plansList as $plan)
+            <div class="plan-foot" @if($loop->last) style="border-right:none;" @endif>
+                <a href="{{ route('auth.register') }}"
+                   class="plan-cta {{ $plan->is_featured ? 'plan-cta-white' : 'plan-cta-outline' }}">
+                    {{ $plan->price_kes === 0 ? 'Start for free' : 'Get started' }}
+                </a>
+            </div>
+            @endforeach
+        </div>
         </div>
         @endif
 
         <p class="reveal" style="text-align:center;font-size:12.5px;font-weight:300;color:var(--text-3);margin-top:32px;">
-            All plans include auto-configured SPF, DKIM & DMARC records and unlimited mailboxes per domain (single-domain billing per plan).
+            All plans include auto-configured SPF, DKIM & DMARC records and unlimited mailboxes per domain.
             Need a custom plan? <a href="mailto:hello@velinexlabs.com" style="color:var(--blue);">Contact us</a>.
         </p>
     </div>
