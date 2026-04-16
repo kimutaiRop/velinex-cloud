@@ -3,72 +3,49 @@
 @section('title', 'Create Account')
 
 @section('content')
-<div class="auth-card auth-card-wide">
-
-    <div class="auth-brand">
-        <img src="{{ asset('logo.svg') }}" alt="Velinex Cloud" class="brand-mark">
-    </div>
-
-    <div class="auth-title">Create client account</div>
-    <div class="auth-sub">Register your company and start managing hosted business mail.</div>
-
-    @if($errors->any())
-        <div class="alert alert-error" style="margin-bottom: 18px;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-            </svg>
-            <div>
-                @foreach($errors->all() as $error)<div>{{ $error }}</div>@endforeach
-            </div>
-        </div>
-    @endif
-
-    <form method="post" action="{{ route('auth.register.store') }}">
-        @csrf
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
-            <div class="form-group">
-                <label for="name" class="form-label">Full Name</label>
-                <input id="name" name="name" required value="{{ old('name') }}"
-                       placeholder="Jane Smith" class="form-input">
-            </div>
-            <div class="form-group">
-                <label for="client_name" class="form-label">Company Name</label>
-                <input id="client_name" name="client_name" required value="{{ old('client_name') }}"
-                       placeholder="Acme Corp" class="form-input">
-            </div>
-            <div class="form-group">
-                <label for="email" class="form-label">Email</label>
-                <input id="email" name="email" type="email" required value="{{ old('email') }}"
-                       placeholder="you@example.com" class="form-input">
-            </div>
-            <div class="form-group">
-                <label for="username" class="form-label">Username</label>
-                <input id="username" name="username" required value="{{ old('username') }}"
-                       placeholder="yourusername" class="form-input">
-            </div>
-            <div class="form-group">
-                <label for="password" class="form-label">Password</label>
-                <input id="password" name="password" type="password" required
-                       placeholder="••••••••" class="form-input">
-            </div>
-            <div class="form-group" style="grid-column: 1 / -1;">
-                <label for="password_confirmation" class="form-label">Confirm Password</label>
-                <input id="password_confirmation" name="password_confirmation" type="password" required
-                       placeholder="••••••••" class="form-input">
-            </div>
+    <div class="w-full max-w-[580px] animate-vc-fade-up rounded-[18px] border border-border-strong bg-surface p-9 shadow-sm">
+        <div class="mb-7">
+            <img src="{{ asset('logo.svg') }}" alt="Velinex Cloud" class="block h-auto w-40 max-w-full">
         </div>
 
-        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 10px; font-size: 14px;">
-            Create Account
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-            </svg>
-        </button>
-    </form>
+        <h1 class="mb-1 font-sans text-[22px] font-bold tracking-wide text-foreground">Create client account</h1>
+        <p class="mb-6 text-[13px] text-muted">Register your company and start managing hosted business mail.</p>
 
-    <div class="auth-footer">
-        Already have an account? <a href="{{ route('login') }}">Sign in</a>
+        @if($errors->any())
+            <x-ui.alert variant="error" class="!mb-[18px]">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+                <div>
+                    @foreach($errors->all() as $error)<div>{{ $error }}</div>@endforeach
+                </div>
+            </x-ui.alert>
+        @endif
+
+        <form method="post" action="{{ route('auth.register.store') }}">
+            @csrf
+            <div class="mb-3.5 grid grid-cols-1 gap-3.5 sm:grid-cols-2">
+                <x-ui.field label="Full Name" name="name" value="{{ old('name') }}" placeholder="Jane Smith" required />
+                <x-ui.field label="Company Name" name="client_name" value="{{ old('client_name') }}" placeholder="Acme Corp" required />
+                <x-ui.field label="Email" name="email" type="email" value="{{ old('email') }}" placeholder="you@example.com" required />
+                <x-ui.field label="Username" name="username" value="{{ old('username') }}" placeholder="yourusername" required />
+                <x-ui.field label="Password" name="password" type="password" placeholder="••••••••" required />
+                <div class="sm:col-span-2">
+                    <x-ui.field label="Confirm Password" name="password_confirmation" type="password" placeholder="••••••••" required />
+                </div>
+            </div>
+
+            <x-ui.button variant="primary" type="submit" class="!mt-2 !w-full !py-2.5 !text-sm">
+                Create Account
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                </svg>
+            </x-ui.button>
+        </form>
+
+        <p class="mt-[18px] text-center text-[12.5px] text-muted">
+            Already have an account?
+            <a href="{{ route('login') }}" class="font-medium text-accent hover:text-accent-hover">Sign in</a>
+        </p>
     </div>
-
-</div>
 @endsection

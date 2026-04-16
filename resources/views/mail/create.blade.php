@@ -5,20 +5,18 @@
 @section('page-title', 'Register Domain')
 
 @section('topbar-actions')
-    <a href="{{ route('mail.dashboard') }}" class="btn btn-ghost">
+    <x-ui.button variant="ghost" href="{{ route('mail.dashboard') }}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
         </svg>
         Back
-    </a>
+    </x-ui.button>
 @endsection
 
 @section('content')
-
-    <div style="max-width: 520px;">
-
+    <div class="max-w-[520px]">
         @if($errors->any())
-            <div class="alert alert-error">
+            <x-ui.alert variant="error">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>
                 </svg>
@@ -27,25 +25,26 @@
                         <div>{{ $error }}</div>
                     @endforeach
                 </div>
-            </div>
+            </x-ui.alert>
         @endif
 
-        <div class="card">
-            <div class="card-body">
-                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 22px; line-height: 1.6;">
+        <x-ui.card flush>
+            <div class="p-5">
+                <p class="mb-6 text-[13px] leading-relaxed text-muted">
                     Enter the domain you want to onboard. We'll generate all required DNS records —
-                    <span class="mono" style="color: var(--accent);">SPF</span>,
-                    <span class="mono" style="color: var(--purple);">DKIM</span>,
-                    <span class="mono" style="color: var(--danger);">DMARC</span>, and
-                    <span class="mono" style="color: #A78BFA;">MX</span> —
+                    <span class="font-mono text-accent">SPF</span>,
+                    <span class="font-mono text-purple">DKIM</span>,
+                    <span class="font-mono text-danger">DMARC</span>, and
+                    <span class="font-mono text-[#A78BFA]">MX</span> —
                     ready to configure at your registrar.
                 </p>
 
                 <form method="post" action="{{ route('mail.domains.store') }}">
                     @csrf
-                    <div class="form-group" style="margin-bottom: 20px;">
-                        <label for="mail_plan_id" class="form-label">Mail Plan</label>
-                        <select id="mail_plan_id" name="mail_plan_id" required class="form-input" style="font-size: 15px; padding: 11px 14px;">
+                    <div class="mb-5">
+                        <label for="mail_plan_id" class="mb-1.5 block font-mono text-[9.5px] uppercase tracking-[0.16em] text-muted">Mail Plan</label>
+                        <select id="mail_plan_id" name="mail_plan_id" required
+                                class="w-full rounded-lg border border-border-strong bg-background px-3.5 py-2.5 font-mono text-[15px] text-foreground focus:border-accent focus:outline-none focus:ring-[3px] focus:ring-accent-muted">
                             <option value="">Select plan</option>
                             @foreach($plans as $plan)
                                 <option value="{{ $plan->id }}" @selected((string) old('mail_plan_id', $plans->firstWhere('is_featured', true)?->id) === (string) $plan->id)>
@@ -55,46 +54,33 @@
                         </select>
                     </div>
 
-                    <div class="form-group" style="margin-bottom: 20px;">
-                        <label for="domain" class="form-label">Domain Name</label>
-                        <input
-                            id="domain"
-                            name="domain"
-                            type="text"
-                            placeholder="example.com"
-                            value="{{ old('domain') }}"
-                            required
-                            autofocus
-                            class="form-input"
-                            style="font-size: 15px; padding: 11px 14px;"
-                        >
-                    </div>
+                    <x-ui.field
+                        label="Domain Name"
+                        name="domain"
+                        class="mb-5"
+                        inputClass="!px-3.5 !py-2.5 !text-[15px]"
+                        value="{{ old('domain') }}"
+                        placeholder="example.com"
+                        required
+                        autofocus
+                    />
 
-                    <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 10px;">
+                    <x-ui.button variant="primary" type="submit" class="!w-full !justify-center !py-2.5">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
                         </svg>
                         Create Domain Setup
-                    </button>
+                    </x-ui.button>
                 </form>
             </div>
 
-            <div style="padding: 14px 20px; border-top: 1px solid var(--border); display: flex; gap: 20px;">
-                <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-muted);">
-                    <span class="dns-chip dns-SPF">SPF</span> auto-generated
-                </div>
-                <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-muted);">
-                    <span class="dns-chip dns-DKIM">DKIM</span> auto-generated
-                </div>
-                <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-muted);">
-                    <span class="dns-chip dns-DMARC">DMARC</span> auto-generated
-                </div>
-                <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-muted);">
-                    <span class="dns-chip dns-MX">MX</span> auto-generated
-                </div>
+            <div class="flex flex-wrap gap-5 border-t border-border px-5 py-3.5">
+                @foreach (['SPF', 'DKIM', 'DMARC', 'MX'] as $t)
+                    <div class="flex items-center gap-2 text-xs text-muted">
+                        <x-ui.dns-chip :type="$t" /> auto-generated
+                    </div>
+                @endforeach
             </div>
-        </div>
-
+        </x-ui.card>
     </div>
-
 @endsection

@@ -5,78 +5,76 @@
 @section('page-title', 'All Domains')
 
 @section('topbar-actions')
-    <a href="{{ route('mail.dashboard') }}" class="btn btn-ghost">Dashboard</a>
-    <a href="{{ route('mail.domains.create') }}" class="btn btn-primary">Add Domain</a>
+    <x-ui.button variant="ghost" href="{{ route('mail.dashboard') }}">Dashboard</x-ui.button>
+    <x-ui.button variant="primary" href="{{ route('mail.domains.create') }}">Add Domain</x-ui.button>
 @endsection
 
 @section('content')
-    <div class="card">
-        <div class="card-body" style="padding-bottom: 0;">
-            <div class="section-header">
-                <span class="section-title">Domain Management</span>
-                <span style="font-size:12px;color:var(--text-muted);">{{ $domains->count() }} total</span>
-            </div>
+    <x-ui.card flush>
+        <div class="border-b border-border p-5 pb-0">
+            <x-ui.section-heading title="Domain Management">
+                <x-slot name="aside">{{ $domains->count() }} total</x-slot>
+            </x-ui.section-heading>
         </div>
-        <div class="table-wrap">
-            <table>
+        <div class="overflow-x-auto">
+            <table class="w-full border-collapse">
                 <thead>
-                    <tr>
-                        <th>Domain</th>
-                        <th>Plan</th>
-                        <th>Status</th>
-                        <th>Mailboxes</th>
-                        <th>Actions</th>
+                    <tr class="border-b border-border">
+                        <th class="whitespace-nowrap px-4 py-2.5 text-left font-mono text-[9px] font-normal uppercase tracking-[0.2em] text-muted">Domain</th>
+                        <th class="whitespace-nowrap px-4 py-2.5 text-left font-mono text-[9px] font-normal uppercase tracking-[0.2em] text-muted">Plan</th>
+                        <th class="whitespace-nowrap px-4 py-2.5 text-left font-mono text-[9px] font-normal uppercase tracking-[0.2em] text-muted">Status</th>
+                        <th class="whitespace-nowrap px-4 py-2.5 text-left font-mono text-[9px] font-normal uppercase tracking-[0.2em] text-muted">Mailboxes</th>
+                        <th class="whitespace-nowrap px-4 py-2.5 text-left font-mono text-[9px] font-normal uppercase tracking-[0.2em] text-muted">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($domains as $domain)
-                        <tr>
-                            <td class="mono">{{ $domain->domain }}</td>
-                            <td>{{ $domain->mailPlan?->name ?? 'Unassigned' }}</td>
-                            <td>
+                        <tr class="border-b border-border transition-colors last:border-0 hover:bg-hover">
+                            <td class="px-4 py-[11px] align-middle font-mono text-[13px] text-foreground">{{ $domain->domain }}</td>
+                            <td class="px-4 py-[11px] align-middle text-[13px] text-foreground">{{ $domain->mailPlan?->name ?? 'Unassigned' }}</td>
+                            <td class="px-4 py-[11px] align-middle text-[13px]">
                                 @if($domain->status === 'verified')
-                                    <span class="badge badge-verified"><span class="badge-dot"></span> verified</span>
+                                    <x-ui.badge variant="verified">verified</x-ui.badge>
                                 @elseif($domain->status === 'disabled')
-                                    <span class="badge badge-fail"><span class="badge-dot"></span> disabled</span>
+                                    <x-ui.badge variant="fail">disabled</x-ui.badge>
                                 @else
-                                    <span class="badge badge-pending"><span class="badge-dot"></span> pending</span>
+                                    <x-ui.badge variant="pending">pending</x-ui.badge>
                                 @endif
                             </td>
-                            <td>{{ $domain->mailboxes->count() }}</td>
-                            <td>
-                                <div class="action-row">
-                                    <a href="{{ route('mail.domains.show', $domain) }}" class="btn btn-outline">DNS</a>
-                                    <a href="{{ route('mail.domains.mailboxes', $domain) }}" class="btn btn-ghost">Email</a>
-                                    <form method="post" action="{{ route('mail.domains.plan', $domain) }}" style="display:flex;align-items:center;gap:6px;">
+                            <td class="px-4 py-[11px] align-middle text-[13px] text-foreground">{{ $domain->mailboxes->count() }}</td>
+                            <td class="px-4 py-[11px] align-middle text-[13px]">
+                                <div class="flex flex-wrap items-center gap-1.5">
+                                    <x-ui.button variant="outline" href="{{ route('mail.domains.show', $domain) }}">DNS</x-ui.button>
+                                    <x-ui.button variant="ghost" href="{{ route('mail.domains.mailboxes', $domain) }}">Email</x-ui.button>
+                                    <form method="post" action="{{ route('mail.domains.plan', $domain) }}" class="flex items-center gap-1.5">
                                         @csrf
-                                        <select name="mail_plan_id" class="form-input" style="width:130px;height:32px;padding:4px 8px;">
+                                        <select name="mail_plan_id" class="h-8 w-[130px] rounded-lg border border-border-strong bg-background px-2 py-1 font-mono text-xs text-foreground focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent-muted">
                                             @foreach($plans as $plan)
                                                 <option value="{{ $plan->id }}" @selected($domain->mail_plan_id === $plan->id)>{{ $plan->name }}</option>
                                             @endforeach
                                         </select>
-                                        <button type="submit" class="btn btn-outline">Update Plan</button>
+                                        <x-ui.button variant="outline" type="submit">Update Plan</x-ui.button>
                                     </form>
                                     <form method="post" action="{{ route('mail.domains.toggle', $domain) }}">
                                         @csrf
-                                        <button type="submit" class="btn btn-ghost">{{ $domain->status === 'disabled' ? 'Enable' : 'Disable' }}</button>
+                                        <x-ui.button variant="ghost" type="submit">{{ $domain->status === 'disabled' ? 'Enable' : 'Disable' }}</x-ui.button>
                                     </form>
-                                    <form method="post" action="{{ route('mail.domains.destroy', $domain) }}">
+                                    <form method="post" action="{{ route('mail.domains.destroy', $domain) }}" onsubmit="return confirm('Delete this domain?');">
                                         @csrf
                                         @method('DELETE')
                                         <input type="hidden" name="force_delete" value="{{ $domain->mailboxes->isNotEmpty() ? 1 : 0 }}">
-                                        <button type="submit" class="btn btn-danger-ghost">Delete</button>
+                                        <x-ui.button variant="danger-ghost" type="submit">Delete</x-ui.button>
                                     </form>
                                 </div>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" style="padding:20px;color:var(--text-muted);">No domains found.</td>
+                            <td colspan="5" class="px-5 py-5 text-[13px] text-muted">No domains found.</td>
                         </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
-    </div>
+    </x-ui.card>
 @endsection
-

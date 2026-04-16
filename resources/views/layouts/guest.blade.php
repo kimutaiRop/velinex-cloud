@@ -11,11 +11,12 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     @endif
 </head>
-<body>
-<div class="auth-bg">
-    <div class="auth-glow-1"></div>
-    <div class="auth-glow-2"></div>
-    @yield('content')
-</div>
+<body class="min-h-screen bg-gradient-to-br from-white from-0% via-[#f4f7ff] via-65% to-[#eef2fb] to-100% font-sans text-foreground antialiased">
+    <div class="pointer-events-none fixed inset-0 bg-[radial-gradient(circle,rgba(62,236,255,0.12)_1px,transparent_1px)] bg-[length:26px_26px]" aria-hidden="true"></div>
+    <div class="pointer-events-none fixed -left-[10%] -top-[20%] h-[600px] w-[600px] rounded-full bg-[radial-gradient(ellipse,rgba(62,236,255,0.16)_0%,transparent_65%)]" aria-hidden="true"></div>
+    <div class="pointer-events-none fixed -bottom-[20%] -right-[10%] h-[500px] w-[500px] rounded-full bg-[radial-gradient(ellipse,rgba(124,58,237,0.08)_0%,transparent_65%)]" aria-hidden="true"></div>
+    <div class="relative z-[1] flex min-h-screen items-center justify-center p-5">
+        @yield('content')
+    </div>
 </body>
 </html>
