@@ -1187,8 +1187,8 @@
                             <div class="plan-price-period">Also available yearly</div>
                         @else
                             <div class="plan-price-val"><small>KES </small>{{ number_format($plan->price_kes) }}</div>
-                            <div class="plan-price-period">per month, billed monthly</div>
-                            <div class="plan-price-period"><small style="font-size:10px;">KES </small>{{ number_format($plan->price_kes * 12) }} per year, billed yearly</div>
+                            <div class="plan-price-period">per year, billed yearly</div>
+                            <div class="plan-price-period"><small style="font-size:10px;">KES </small>{{ number_format($plan->price_kes / 12) }} estimated monthly equivalent</div>
                         @endif
                     </div>
 

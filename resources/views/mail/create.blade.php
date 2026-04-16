@@ -49,7 +49,7 @@
                             <option value="">Select plan</option>
                             @foreach($plans as $plan)
                                 <option value="{{ $plan->id }}" @selected((string) old('mail_plan_id', $plans->firstWhere('is_featured', true)?->id) === (string) $plan->id)>
-                                    {{ $plan->name }} — {{ $plan->price_label }}/month
+                                    {{ $plan->name }} — {{ $plan->price_label }}/year
                                 </option>
                             @endforeach
                         </select>
