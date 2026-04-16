@@ -22,7 +22,7 @@
 </nav>
 <div class="pointer-events-none fixed inset-0 z-[60] hidden bg-slate-900/40 opacity-0 transition-opacity duration-200" id="nav-drawer-backdrop" aria-hidden="true"></div>
 <aside class="pointer-events-none fixed right-0 top-0 z-[70] flex h-full w-[86vw] max-w-xs translate-x-full flex-col gap-2 overflow-y-auto border-l border-slate-200 bg-white p-6 pt-16 shadow-xl transition-transform duration-200" id="nav-drawer" role="dialog" aria-modal="true" aria-label="Site menu" aria-hidden="true">
-    <div class="px-2 text-xs font-medium uppercase tracking-[0.12em] text-slate-400">Menu</div>
+    <p class="mb-1 border-l-2 border-slate-300 pl-2 font-mono text-[10px] font-normal uppercase tracking-[0.22em] text-slate-500">Menu</p>
     <a href="#services" class="rounded px-3 py-2 text-sm text-slate-700 hover:bg-slate-100">Services</a>
     <a href="#features" class="rounded px-3 py-2 text-sm text-slate-700 hover:bg-slate-100">Features</a>
     <a href="#how" class="rounded px-3 py-2 text-sm text-slate-700 hover:bg-slate-100">How it works</a>
