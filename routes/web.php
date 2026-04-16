@@ -27,7 +27,7 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [AuthController::class, 'register'])->name('auth.register.store');
 });
 
-Route::middleware(['auth', 'log.auth'])->group(function () {
+Route::middleware(['log.auth', 'auth'])->group(function () {
     Route::get('/dashboard', function () {
         Log::channel('single')->debug('[DASHBOARD] /dashboard hit — auth passed, redirecting to mail.dashboard', [
             'session_id' => session()->getId(),
