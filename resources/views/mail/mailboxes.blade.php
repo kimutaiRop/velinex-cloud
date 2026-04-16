@@ -14,6 +14,7 @@
         <div class="card-body">
             <div class="section-header">
                 <span class="section-title">{{ $domain->domain }} Mailbox Provisioning</span>
+                <span style="font-size:12px;color:var(--text-muted);">Plan: {{ $domain->mailPlan?->name ?? 'Unassigned' }}</span>
             </div>
 
             @if(session('generated_mailbox_password'))
@@ -73,6 +74,73 @@
         </div>
     </div>
 
+    <div class="card" style="margin-bottom:20px;">
+        <div class="card-body">
+            <div class="section-header">
+                <span class="section-title">Aliases & Forwarding</span>
+            </div>
+
+            @if($canManageRouting)
+                <form method="post" action="{{ route('mail.aliases.store', $domain) }}">
+                    @csrf
+                    <div class="mailbox-form" style="border-top:none;padding:0;background:transparent;">
+                        <div class="form-group">
+                            <label class="form-label">Alias Local Part</label>
+                            <input name="alias_local_part" type="text" placeholder="sales" required class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Destinations</label>
+                            <input name="destinations" type="text" placeholder="ceo@{{ $domain->domain }}, team@gmail.com" required class="form-input">
+                        </div>
+                        <div class="form-group" style="align-self:end;">
+                            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">Create Alias</button>
+                        </div>
+                    </div>
+                </form>
+
+                <div style="margin-top:14px;">
+                    <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;">Existing aliases</div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Alias</th>
+                                    <th>Destinations</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($aliases as $alias)
+                                    <tr>
+                                        <td class="mono">{{ $alias['address'] }}</td>
+                                        <td class="mono">{{ implode(', ', $alias['destinations']) }}</td>
+                                        <td>{{ $alias['active'] ? 'active' : 'disabled' }}</td>
+                                        <td>
+                                            <form method="post" action="{{ route('mail.aliases.destroy', [$domain, $alias['address']]) }}">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger-ghost">Remove</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="4" style="padding:16px;color:var(--text-muted);">No aliases configured for this domain yet.</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            @else
+                <div class="alert alert-error" style="margin-top:10px;">
+                    This domain plan does not include mail aliases & forwarding. Upgrade the domain plan to unlock these routing features.
+                </div>
+            @endif
+        </div>
+    </div>
+
     <div class="card">
         <div class="card-body" style="padding-bottom:0;">
             <div class="section-header">
@@ -89,6 +157,7 @@
                         <th>Delivery</th>
                         <th>Reset Required</th>
                         <th>Status</th>
+                        <th>Forwarding</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -100,6 +169,26 @@
                             <td>{{ $mailbox->password_delivery_status ?? 'n/a' }}</td>
                             <td>{{ $mailbox->require_initial_reset ? 'yes' : 'no' }}</td>
                             <td>{{ $mailbox->active ? 'active' : 'suspended' }}</td>
+                            <td>
+                                @if($canManageRouting)
+                                    <form method="post" action="{{ route('mail.mailboxes.forwarding', $mailbox) }}" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                                        @csrf
+                                        <input type="text"
+                                               name="forward_to"
+                                               placeholder="ops@gmail.com, team@other.com"
+                                               class="form-input"
+                                               style="width:220px;"
+                                               value="{{ implode(', ', $forwardingByMailbox[$mailbox->id] ?? []) }}">
+                                        <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-muted);">
+                                            <input type="checkbox" name="keep_copy" value="1" checked>
+                                            Keep local copy
+                                        </label>
+                                        <button type="submit" class="btn btn-outline">Save</button>
+                                    </form>
+                                @else
+                                    <span style="font-size:12px;color:var(--text-muted);">Not in plan</span>
+                                @endif
+                            </td>
                             <td>
                                 <div class="action-row">
                                     <form method="post" action="{{ route('mail.mailboxes.toggle', $mailbox) }}">
@@ -116,7 +205,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" style="padding:20px;color:var(--text-muted);">No mailboxes yet.</td>
+                            <td colspan="7" style="padding:20px;color:var(--text-muted);">No mailboxes yet.</td>
                         </tr>
                     @endforelse
                 </tbody>

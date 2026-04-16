@@ -40,7 +40,11 @@
                     <span class="badge badge-pending"><span class="badge-dot"></span> pending</span>
                 @endif
             </div>
-            <div class="domain-hero-meta">Client: {{ $domain->client->name }} &nbsp;·&nbsp; Added {{ $domain->created_at->format('d M Y') }}</div>
+            <div class="domain-hero-meta">
+                Client: {{ $domain->client->name }}
+                &nbsp;·&nbsp; Plan: {{ $domain->mailPlan?->name ?? 'Unassigned' }}
+                &nbsp;·&nbsp; Added {{ $domain->created_at->format('d M Y') }}
+            </div>
         </div>
 
         @if($domain->status !== 'verified')

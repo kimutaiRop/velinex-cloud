@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Client;
 use App\Models\Domain;
+use App\Models\MailPlan;
 use App\Services\MailAnalyticsService;
 use App\Services\DomainDnsTemplateService;
 use App\Services\DomainDnsVerificationService;
@@ -12,6 +13,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use RuntimeException;
 
@@ -27,7 +29,7 @@ class MailDomainController extends Controller
     public function index(): View
     {
         $user = Auth::user();
-        $domains = Domain::with(['client', 'dnsRecords', 'mailboxes'])
+        $domains = Domain::with(['client', 'dnsRecords', 'mailboxes', 'mailPlan'])
             ->where('client_id', $user->client_id)
             ->latest('updated_at')
             ->get();
@@ -50,6 +52,7 @@ class MailDomainController extends Controller
 
         return view('mail.domains', [
             'domains' => Domain::with(['client', 'dnsRecords', 'mailboxes'])
+                ->with('mailPlan')
                 ->where('client_id', $user->client_id)
                 ->latest('updated_at')
                 ->get(),
@@ -58,7 +61,9 @@ class MailDomainController extends Controller
 
     public function create(): View
     {
-        return view('mail.create');
+        return view('mail.create', [
+            'plans' => MailPlan::active()->get(),
+        ]);
     }
 
     public function store(Request $request): RedirectResponse
@@ -66,6 +71,7 @@ class MailDomainController extends Controller
         $validated = $request->validate([
             'client_name' => ['nullable', 'string', 'max:150'],
             'domain' => ['required', 'string', 'max:190', 'regex:/^(?!-)(?:[a-zA-Z0-9-]{1,63}\.)+[A-Za-z]{2,}$/', 'unique:domains,domain'],
+            'mail_plan_id' => ['required', Rule::exists('mail_plans', 'id')->where(fn ($query) => $query->where('is_active', true))],
         ]);
 
         $user = Auth::user();
@@ -85,6 +91,7 @@ class MailDomainController extends Controller
 
         $domain = Domain::create([
             'client_id' => $client->id,
+            'mail_plan_id' => (int) $validated['mail_plan_id'],
             'domain' => Str::lower($validated['domain']),
             'status' => 'pending',
             'verification_token' => $token,
@@ -102,7 +109,7 @@ class MailDomainController extends Controller
     public function show(Domain $domain): View
     {
         abort_if($domain->client_id !== Auth::user()->client_id, 403);
-        $domain->load(['client', 'dnsRecords']);
+        $domain->load(['client', 'dnsRecords', 'mailPlan']);
 
         return view('mail.show', [
             'domain' => $domain,
@@ -114,11 +121,28 @@ class MailDomainController extends Controller
     public function mailboxes(Domain $domain): View
     {
         abort_if($domain->client_id !== Auth::user()->client_id, 403);
-        $domain->load(['client']);
+        $domain->load(['client', 'mailPlan']);
+        $canManageRouting = $domain->mailPlan?->supportsAliasesForwarders() ?? false;
+
+        $aliases = [];
+        $forwardingByMailbox = [];
+        if ($canManageRouting) {
+            try {
+                $aliases = $this->iredMailService->listDomainAliases($domain->domain);
+                foreach ($domain->mailboxes()->get(['id', 'email']) as $mailbox) {
+                    $forwardingByMailbox[$mailbox->id] = $this->iredMailService->getMailboxForwarding($mailbox->email);
+                }
+            } catch (RuntimeException) {
+                // Keep dashboard usable even if routing tables are unavailable.
+            }
+        }
 
         return view('mail.mailboxes', [
             'domain' => $domain,
             'mailboxes' => $domain->mailboxes()->latest()->get(),
+            'aliases' => $aliases,
+            'forwardingByMailbox' => $forwardingByMailbox,
+            'canManageRouting' => $canManageRouting,
         ]);
     }
 

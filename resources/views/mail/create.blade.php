@@ -44,6 +44,18 @@
                 <form method="post" action="{{ route('mail.domains.store') }}">
                     @csrf
                     <div class="form-group" style="margin-bottom: 20px;">
+                        <label for="mail_plan_id" class="form-label">Mail Plan</label>
+                        <select id="mail_plan_id" name="mail_plan_id" required class="form-input" style="font-size: 15px; padding: 11px 14px;">
+                            <option value="">Select plan</option>
+                            @foreach($plans as $plan)
+                                <option value="{{ $plan->id }}" @selected((string) old('mail_plan_id', $plans->firstWhere('is_featured', true)?->id) === (string) $plan->id)>
+                                    {{ $plan->name }} — {{ $plan->price_label }}/month
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 20px;">
                         <label for="domain" class="form-label">Domain Name</label>
                         <input
                             id="domain"

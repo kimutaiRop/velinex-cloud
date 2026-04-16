@@ -18,6 +18,7 @@ class Domain extends Model
         'verification_token',
         'verified_at',
         'iredmail_provisioned',
+        'mail_plan_id',
     ];
 
     protected $casts = [
@@ -28,6 +29,11 @@ class Domain extends Model
     public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class);
+    }
+
+    public function mailPlan(): BelongsTo
+    {
+        return $this->belongsTo(MailPlan::class);
     }
 
     public function dnsRecords(): HasMany

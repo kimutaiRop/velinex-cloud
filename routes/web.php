@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\PlanController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MailboxController;
 use App\Http\Controllers\MailDomainController;
+use App\Http\Controllers\MailRoutingController;
 use App\Models\MailPlan;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
@@ -56,6 +57,11 @@ Route::middleware(['log.auth', 'auth'])->group(function () {
         Route::post('/domains/{domain}/mailboxes', [MailboxController::class, 'store'])->name('mailboxes.store');
         Route::post('/mailboxes/{mailbox}/password', [MailboxController::class, 'updatePassword'])->name('mailboxes.password');
         Route::post('/mailboxes/{mailbox}/toggle', [MailboxController::class, 'toggle'])->name('mailboxes.toggle');
+        Route::post('/domains/{domain}/aliases', [MailRoutingController::class, 'storeAlias'])->name('aliases.store');
+        Route::delete('/domains/{domain}/aliases/{address}', [MailRoutingController::class, 'deleteAlias'])
+            ->where('address', '.*')
+            ->name('aliases.destroy');
+        Route::post('/mailboxes/{mailbox}/forwarding', [MailRoutingController::class, 'updateForwarding'])->name('mailboxes.forwarding');
     });
 
     Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {

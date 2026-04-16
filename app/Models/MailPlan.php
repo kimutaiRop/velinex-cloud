@@ -47,4 +47,18 @@ class MailPlan extends Model
     {
         return $query->where('is_active', true)->orderBy('sort_order');
     }
+
+    public function supportsFeature(string $keyword): bool
+    {
+        $needle = mb_strtolower($keyword);
+        return collect($this->features ?? [])->contains(function ($feature) use ($needle) {
+            return str_contains(mb_strtolower((string) $feature), $needle);
+        });
+    }
+
+    public function supportsAliasesForwarders(): bool
+    {
+        return $this->supportsFeature('alias')
+            || $this->supportsFeature('forward');
+    }
 }

@@ -22,6 +22,7 @@
                 <thead>
                     <tr>
                         <th>Domain</th>
+                        <th>Plan</th>
                         <th>Status</th>
                         <th>Mailboxes</th>
                         <th>Actions</th>
@@ -31,6 +32,7 @@
                     @forelse($domains as $domain)
                         <tr>
                             <td class="mono">{{ $domain->domain }}</td>
+                            <td>{{ $domain->mailPlan?->name ?? 'Unassigned' }}</td>
                             <td>
                                 @if($domain->status === 'verified')
                                     <span class="badge badge-verified"><span class="badge-dot"></span> verified</span>
@@ -60,7 +62,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" style="padding:20px;color:var(--text-muted);">No domains found.</td>
+                            <td colspan="5" style="padding:20px;color:var(--text-muted);">No domains found.</td>
                         </tr>
                     @endforelse
                 </tbody>

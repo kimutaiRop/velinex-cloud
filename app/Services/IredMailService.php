@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\QueryException;
 use RuntimeException;
 
 class IredMailService
@@ -157,6 +158,115 @@ class IredMailService
             ->delete();
     }
 
+    public function listDomainAliases(string $domain): array
+    {
+        try {
+            $rows = DB::connection('iredmail')->table('alias')
+                ->where('domain', $domain)
+                ->where('address', 'like', '%@' . $domain)
+                ->orderBy('address')
+                ->get(['address', 'goto', 'active']);
+        } catch (QueryException $e) {
+            throw new RuntimeException('Unable to read aliases from iRedMail: ' . $e->getMessage());
+        }
+
+        return $rows->map(function ($row) {
+            return [
+                'address' => $row->address,
+                'destinations' => $this->parseGoto((string) $row->goto),
+                'active' => (bool) $row->active,
+            ];
+        })->all();
+    }
+
+    public function createAlias(string $aliasEmail, array $destinations): void
+    {
+        [$localPart, $domain] = $this->splitEmail($aliasEmail);
+        $this->ensureDomain($domain);
+        $now = now()->toDateTimeString();
+
+        $goto = $this->buildGoto($destinations);
+
+        try {
+            DB::connection('iredmail')->table('alias')->updateOrInsert(
+                ['address' => strtolower($localPart . '@' . $domain)],
+                [
+                    'name' => $localPart,
+                    'goto' => $goto,
+                    'domain' => strtolower($domain),
+                    'active' => 1,
+                    'modified' => $now,
+                    'created' => $now,
+                    'expired' => '9999-12-31 00:00:00',
+                ]
+            );
+        } catch (QueryException $e) {
+            throw new RuntimeException('Unable to create alias in iRedMail: ' . $e->getMessage());
+        }
+    }
+
+    public function deleteAlias(string $aliasEmail): void
+    {
+        try {
+            DB::connection('iredmail')->table('alias')
+                ->where('address', strtolower($aliasEmail))
+                ->delete();
+        } catch (QueryException $e) {
+            throw new RuntimeException('Unable to delete alias in iRedMail: ' . $e->getMessage());
+        }
+    }
+
+    public function getMailboxForwarding(string $mailboxEmail): array
+    {
+        try {
+            $row = DB::connection('iredmail')->table('alias')
+                ->where('address', strtolower($mailboxEmail))
+                ->first(['goto']);
+        } catch (QueryException $e) {
+            throw new RuntimeException('Unable to read forwarding from iRedMail: ' . $e->getMessage());
+        }
+
+        if (!$row) {
+            return [];
+        }
+
+        return array_values(array_filter(
+            $this->parseGoto((string) $row->goto),
+            fn (string $destination) => strtolower($destination) !== strtolower($mailboxEmail)
+        ));
+    }
+
+    public function setMailboxForwarding(string $mailboxEmail, array $destinations, bool $keepCopy = true): void
+    {
+        [$localPart, $domain] = $this->splitEmail($mailboxEmail);
+        $email = strtolower($localPart . '@' . $domain);
+
+        $normalizedDestinations = array_values(array_unique(array_map('strtolower', $destinations)));
+        if ($keepCopy && !in_array($email, $normalizedDestinations, true)) {
+            $normalizedDestinations[] = $email;
+        }
+
+        $goto = $this->buildGoto($normalizedDestinations);
+        $now = now()->toDateTimeString();
+
+        try {
+            DB::connection('iredmail')->table('alias')->updateOrInsert(
+                ['address' => $email],
+                [
+                    'name' => $localPart,
+                    'goto' => $goto,
+                    'domain' => strtolower($domain),
+                    'active' => 1,
+                    'modified' => $now,
+                    'created' => $now,
+                    'expired' => '9999-12-31 00:00:00',
+                ]
+            );
+        } catch (QueryException $e) {
+            throw new RuntimeException('Unable to update forwarding in iRedMail: ' . $e->getMessage());
+        }
+    }
+
     private function splitEmail(string $email): array
     {
         $parts = explode('@', $email, 2);
@@ -183,6 +293,28 @@ class IredMailService
         $digest = hash('sha512', $plainPassword . $salt, true) . $salt;
 
         return '{SSHA512}' . base64_encode($digest);
+    }
+
+    private function buildGoto(array $destinations): string
+    {
+        $normalized = array_values(array_unique(array_filter(array_map(function ($destination) {
+            return strtolower(trim((string) $destination));
+        }, $destinations))));
+
+        if (empty($normalized)) {
+            throw new RuntimeException('At least one destination is required.');
+        }
+
+        return implode(',', $normalized);
+    }
+
+    private function parseGoto(string $goto): array
+    {
+        if ($goto === '') {
+            return [];
+        }
+
+        return array_values(array_filter(array_map('trim', explode(',', $goto))));
     }
 }
 
