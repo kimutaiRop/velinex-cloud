@@ -660,6 +660,7 @@
             min-height: 100%;
             border-right: 1px solid var(--border);
             background: transparent;
+            position: relative;
         }
         .plan-card:last-child { border-right: none; }
         .plan-card.featured {
@@ -670,6 +671,9 @@
             padding: 20px 18px;
             border-bottom: 1px solid var(--border);
             background: rgba(245,250,255,0.72);
+            min-height: 255px;
+            display: flex;
+            flex-direction: column;
         }
         .featured .plan-head {
             background: rgba(26,108,240,0.1);
@@ -678,10 +682,14 @@
 
         .plan-badge {
             display: inline-block;
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            z-index: 2;
             padding: 2px 9px;
             border-radius: 99px;
             font-size: 10px; font-weight: 400;
-            margin-bottom: 10px;
+            margin-bottom: 0;
             color: var(--blue);
             background: rgba(26,108,240,0.1);
             border: 1px solid rgba(26,108,240,0.18);
@@ -694,7 +702,10 @@
             font-size: 12px; font-weight: 300; color: var(--text-3);
             line-height: 1.45; margin-bottom: 12px; min-height: 36px;
         }
-        .plan-price { margin-bottom: 12px; }
+        .plan-price {
+            margin-bottom: 12px;
+            min-height: 74px;
+        }
         .plan-price-val {
             font-size: 27px; font-weight: 400; color: var(--text);
             letter-spacing: -0.03em; line-height: 1;
@@ -705,13 +716,14 @@
         .plan-price-period {
             font-size: 11px; font-weight: 300; color: var(--text-3); margin-top: 2px;
         }
+        .plan-price-period + .plan-price-period { margin-top: 1px; }
 
         .plan-storage {
             display: inline-flex; align-items: center; gap: 5px;
             padding: 4px 10px;
             background: #fff; border: 1px solid var(--border);
             border-radius: 99px; font-size: 11px; font-weight: 400; color: var(--text-2);
-            margin-bottom: 14px;
+            margin-top: auto;
         }
         .featured .plan-storage {
             border-color: rgba(26,108,240,0.28);
@@ -1114,7 +1126,7 @@
         <div class="pricing-head reveal">
             <div class="section-eyebrow">Pricing</div>
             <h2 class="section-h2">Simple, transparent pricing.</h2>
-            <p class="section-sub">Host with us and get <strong>unlimited mailboxes per domain</strong> on every plan. Only pay for storage and the number of domains you need.</p>
+            <p class="section-sub">Host with us and get <strong>unlimited mailboxes per domain</strong> on every plan. Pricing is per single domain service on each plan.</p>
             <div class="pricing-note">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                 Unlimited mailboxes included on all plans — no per-seat fees
@@ -1137,9 +1149,11 @@
                         @if($plan->price_kes === 0)
                             <div class="plan-price-val">Free</div>
                             <div class="plan-price-period">No credit card needed</div>
+                            <div class="plan-price-period">Also available yearly</div>
                         @else
                             <div class="plan-price-val"><small>KES </small>{{ number_format($plan->price_kes) }}</div>
                             <div class="plan-price-period">per month, billed monthly</div>
+                            <div class="plan-price-period"><small style="font-size:10px;">KES </small>{{ number_format($plan->price_kes * 12) }} per year, billed yearly</div>
                         @endif
                     </div>
 
@@ -1151,11 +1165,16 @@
 
                 <ul class="plan-features">
                     @foreach($plan->features as $feature)
+                    @php
+                        $normalizedFeature = preg_replace('/\bunlimited\s+domains?\b/i', '1 domain', $feature);
+                        $normalizedFeature = preg_replace('/\bup to\s+\d+\s+domains?\b/i', '1 domain', $normalizedFeature);
+                        $normalizedFeature = preg_replace('/\b\d+\s+domains?\b/i', '1 domain', $normalizedFeature);
+                    @endphp
                     <li>
                         <span class="plan-check">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                         </span>
-                        {{ $feature }}
+                        {{ $normalizedFeature }}
                     </li>
                     @endforeach
                 </ul>
@@ -1172,7 +1191,7 @@
         @endif
 
         <p class="reveal" style="text-align:center;font-size:12.5px;font-weight:300;color:var(--text-3);margin-top:32px;">
-            All plans include auto-configured SPF, DKIM & DMARC records and unlimited mailboxes per domain.
+            All plans include auto-configured SPF, DKIM & DMARC records and unlimited mailboxes per domain (single-domain billing per plan).
             Need a custom plan? <a href="mailto:hello@velinexlabs.com" style="color:var(--blue);">Contact us</a>.
         </p>
     </div>
