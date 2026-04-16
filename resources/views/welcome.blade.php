@@ -628,7 +628,7 @@
         /* ─── PRICING ─── */
         .pricing {
             padding: 88px 0;
-            background: var(--bg);
+            background: linear-gradient(180deg, var(--bg) 0%, #f8fbff 100%);
             position: relative;
             overflow: hidden;
         }
@@ -643,123 +643,146 @@
             margin-top: 14px;
         }
         .pricing-note svg { width: 11px; height: 11px; }
+
+        /* Matrix-style pricing board inspired by registrar product tables */
         .pricing-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-            align-items: start;
-        }
-        .plan-card {
-            background: var(--bg);
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            background: #fff;
             border: 1px solid var(--border);
             border-radius: 14px;
-            padding: 28px 24px;
-            position: relative;
             overflow: hidden;
-            transition: border-color .18s, box-shadow .18s, transform .18s;
+            box-shadow: var(--shadow-sm);
         }
-        .plan-card:hover { border-color: var(--border-hi); box-shadow: var(--shadow-md); transform: translateY(-3px); }
+        .plan-card {
+            display: flex;
+            flex-direction: column;
+            min-height: 100%;
+            border-right: 1px solid var(--border);
+            background: transparent;
+        }
+        .plan-card:last-child { border-right: none; }
         .plan-card.featured {
-            background: var(--blue);
-            border-color: var(--blue);
-            color: #fff;
-            transform: translateY(-8px);
-            box-shadow: 0 20px 48px rgba(26,108,240,0.3);
+            background: linear-gradient(180deg, rgba(26,108,240,0.04) 0%, rgba(26,108,240,0.08) 100%);
         }
-        .plan-card.featured:hover { transform: translateY(-12px); box-shadow: 0 24px 56px rgba(26,108,240,0.38); }
 
-        /* Top accent ring decoration on featured */
-        .plan-card.featured::before {
-            content: ''; position: absolute;
-            top: -60px; right: -60px;
-            width: 180px; height: 180px; border-radius: 50%;
-            border: 1.5px solid rgba(255,255,255,0.12);
-            pointer-events: none;
+        .plan-head {
+            padding: 20px 18px;
+            border-bottom: 1px solid var(--border);
+            background: rgba(245,250,255,0.72);
         }
-        .plan-card.featured::after {
-            content: ''; position: absolute;
-            top: -20px; right: -20px;
-            width: 100px; height: 100px; border-radius: 50%;
-            border: 1px solid rgba(255,255,255,0.08);
-            pointer-events: none;
+        .featured .plan-head {
+            background: rgba(26,108,240,0.1);
+            border-bottom-color: rgba(26,108,240,0.2);
         }
 
         .plan-badge {
             display: inline-block;
             padding: 2px 9px;
-            background: rgba(255,255,255,0.18);
             border-radius: 99px;
-            font-size: 10px; font-weight: 400; color: #fff;
-            margin-bottom: 16px;
+            font-size: 10px; font-weight: 400;
+            margin-bottom: 10px;
+            color: var(--blue);
+            background: rgba(26,108,240,0.1);
+            border: 1px solid rgba(26,108,240,0.18);
         }
         .plan-name {
-            font-size: 16px; font-weight: 400; color: var(--text);
-            margin-bottom: 4px; letter-spacing: -0.01em;
+            font-size: 17px; font-weight: 500; color: var(--text);
+            margin-bottom: 5px; letter-spacing: -0.02em;
         }
-        .featured .plan-name { color: #fff; }
-
         .plan-desc {
-            font-size: 12.5px; font-weight: 300; color: var(--text-3);
-            line-height: 1.55; margin-bottom: 22px; min-height: 38px;
+            font-size: 12px; font-weight: 300; color: var(--text-3);
+            line-height: 1.45; margin-bottom: 12px; min-height: 36px;
         }
-        .featured .plan-desc { color: rgba(255,255,255,0.65); }
-
-        .plan-price { margin-bottom: 22px; }
+        .plan-price { margin-bottom: 12px; }
         .plan-price-val {
-            font-size: 32px; font-weight: 300; color: var(--text);
-            letter-spacing: -0.04em; line-height: 1;
+            font-size: 27px; font-weight: 400; color: var(--text);
+            letter-spacing: -0.03em; line-height: 1;
         }
-        .featured .plan-price-val { color: #fff; }
         .plan-price-val small {
-            font-size: 13px; font-weight: 300; vertical-align: super; letter-spacing: 0;
+            font-size: 12px; font-weight: 400; vertical-align: super; letter-spacing: 0;
         }
         .plan-price-period {
-            font-size: 11.5px; font-weight: 300; color: var(--text-3); margin-top: 2px;
+            font-size: 11px; font-weight: 300; color: var(--text-3); margin-top: 2px;
         }
-        .featured .plan-price-period { color: rgba(255,255,255,0.55); }
 
-        .plan-divider {
-            height: 1px; background: var(--border); margin-bottom: 18px;
+        .plan-storage {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 4px 10px;
+            background: #fff; border: 1px solid var(--border);
+            border-radius: 99px; font-size: 11px; font-weight: 400; color: var(--text-2);
+            margin-bottom: 14px;
         }
-        .featured .plan-divider { background: rgba(255,255,255,0.14); }
+        .featured .plan-storage {
+            border-color: rgba(26,108,240,0.28);
+            background: rgba(26,108,240,0.08);
+            color: var(--blue);
+        }
+        .plan-storage svg { width: 10px; height: 10px; }
 
-        .plan-features { list-style: none; display: flex; flex-direction: column; gap: 9px; margin-bottom: 26px; }
-        .plan-features li { display: flex; align-items: flex-start; gap: 8px; font-size: 12.5px; font-weight: 300; color: var(--text-2); line-height: 1.45; }
-        .featured .plan-features li { color: rgba(255,255,255,0.82); }
+        .plan-features {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 16px 18px 20px;
+            margin: 0;
+            flex: 1;
+        }
+        .plan-features li {
+            display: flex; align-items: center; gap: 8px;
+            border: 1px solid var(--border);
+            background: #fff;
+            border-radius: 999px;
+            padding: 6px 10px;
+            font-size: 12px;
+            font-weight: 300;
+            color: var(--text-2);
+            line-height: 1.25;
+        }
+        .featured .plan-features li {
+            border-color: rgba(26,108,240,0.2);
+            background: rgba(255,255,255,0.88);
+        }
         .plan-check {
-            width: 14px; height: 14px; border-radius: 50%;
-            background: var(--green-dim); color: var(--green);
+            width: 15px; height: 15px; border-radius: 50%;
+            background: rgba(255,96,67,0.1); color: #f2573e;
             display: flex; align-items: center; justify-content: center;
-            flex-shrink: 0; margin-top: 1px;
+            flex-shrink: 0;
         }
-        .featured .plan-check { background: rgba(255,255,255,0.16); color: #fff; }
         .plan-check svg { width: 7px; height: 7px; }
 
+        .plan-foot {
+            margin-top: auto;
+            padding: 0 18px 18px;
+        }
         .plan-cta {
             display: block; text-align: center;
-            padding: 9px 18px; border-radius: 7px; font-size: 13px; font-weight: 400;
+            padding: 9px 18px; border-radius: 8px; font-size: 12.5px; font-weight: 500;
             transition: background .13s, box-shadow .13s, transform .13s;
         }
         .plan-cta-outline {
-            border: 1px solid var(--border-hi); color: var(--text-2); background: transparent;
+            border: 1px solid var(--border-hi); color: var(--text-2); background: #fff;
         }
         .plan-cta-outline:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-dim); }
         .plan-cta-white {
-            background: #fff; color: var(--blue); border: none;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+            background: var(--blue);
+            color: #fff;
+            border: 1px solid transparent;
+            box-shadow: 0 5px 18px rgba(26,108,240,0.18);
         }
-        .plan-cta-white:hover { background: #f0f5ff; box-shadow: 0 4px 18px rgba(0,0,0,0.16); transform: translateY(-1px); }
+        .plan-cta-white:hover { background: #1f61cf; box-shadow: 0 8px 24px rgba(26,108,240,0.24); transform: translateY(-1px); }
 
-        /* Storage highlight pill */
-        .plan-storage {
-            display: inline-flex; align-items: center; gap: 5px;
-            padding: 3px 10px;
-            background: var(--bg-2); border: 1px solid var(--border);
-            border-radius: 99px; font-size: 11px; font-weight: 400; color: var(--text-2);
-            margin-bottom: 16px;
+        @media (max-width: 1080px) {
+            .pricing-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .plan-card:nth-child(2n) { border-right: none; }
+            .plan-card:nth-child(n+3) { border-top: 1px solid var(--border); }
         }
-        .featured .plan-storage { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.18); color: rgba(255,255,255,0.8); }
-        .plan-storage svg { width: 10px; height: 10px; }
+        @media (max-width: 680px) {
+            .pricing-grid { grid-template-columns: 1fr; }
+            .plan-card { border-right: none; border-top: 1px solid var(--border); }
+            .plan-card:first-child { border-top: none; }
+        }
 
         /* ─── Reveal ─── */
         @keyframes rise { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:none} }
@@ -1102,29 +1125,29 @@
         <div class="pricing-grid reveal">
             @foreach($plans as $plan)
             <div class="plan-card {{ $plan->is_featured ? 'featured' : '' }}">
-                @if($plan->is_featured)
-                    <div class="plan-badge">Most popular</div>
-                @endif
-
-                <div class="plan-name">{{ $plan->name }}</div>
-                <div class="plan-desc">{{ $plan->description }}</div>
-
-                <div class="plan-price">
-                    @if($plan->price_kes === 0)
-                        <div class="plan-price-val">Free</div>
-                        <div class="plan-price-period">No credit card needed</div>
-                    @else
-                        <div class="plan-price-val"><small>KES </small>{{ number_format($plan->price_kes) }}</div>
-                        <div class="plan-price-period">per month, billed monthly</div>
+                <div class="plan-head">
+                    @if($plan->is_featured)
+                        <div class="plan-badge">Most popular</div>
                     @endif
-                </div>
 
-                <div class="plan-storage">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
-                    {{ $plan->storage_label }} / mailbox
-                </div>
+                    <div class="plan-name">{{ $plan->name }}</div>
+                    <div class="plan-desc">{{ $plan->description }}</div>
 
-                <div class="plan-divider"></div>
+                    <div class="plan-price">
+                        @if($plan->price_kes === 0)
+                            <div class="plan-price-val">Free</div>
+                            <div class="plan-price-period">No credit card needed</div>
+                        @else
+                            <div class="plan-price-val"><small>KES </small>{{ number_format($plan->price_kes) }}</div>
+                            <div class="plan-price-period">per month, billed monthly</div>
+                        @endif
+                    </div>
+
+                    <div class="plan-storage">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+                        {{ $plan->storage_label }} / mailbox
+                    </div>
+                </div>
 
                 <ul class="plan-features">
                     @foreach($plan->features as $feature)
@@ -1137,10 +1160,12 @@
                     @endforeach
                 </ul>
 
-                <a href="{{ route('auth.register') }}"
-                   class="plan-cta {{ $plan->is_featured ? 'plan-cta-white' : 'plan-cta-outline' }}">
-                    {{ $plan->price_kes === 0 ? 'Start for free' : 'Get started' }}
-                </a>
+                <div class="plan-foot">
+                    <a href="{{ route('auth.register') }}"
+                       class="plan-cta {{ $plan->is_featured ? 'plan-cta-white' : 'plan-cta-outline' }}">
+                        {{ $plan->price_kes === 0 ? 'Start for free' : 'Get started' }}
+                    </a>
+                </div>
             </div>
             @endforeach
         </div>
