@@ -133,6 +133,30 @@ class IredMailService
         }
     }
 
+    public function deleteMailbox(string $email): void
+    {
+        DB::connection('iredmail')->table('mailbox')
+            ->where('username', $email)
+            ->delete();
+    }
+
+    public function setDomainActive(string $domain, bool $active): void
+    {
+        DB::connection('iredmail')->table('domain')
+            ->where('domain', $domain)
+            ->update([
+                'active' => $active ? 1 : 0,
+                'modified' => now()->toDateTimeString(),
+            ]);
+    }
+
+    public function deleteDomain(string $domain): void
+    {
+        DB::connection('iredmail')->table('domain')
+            ->where('domain', $domain)
+            ->delete();
+    }
+
     private function splitEmail(string $email): array
     {
         $parts = explode('@', $email, 2);

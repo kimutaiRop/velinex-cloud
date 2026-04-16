@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'Dashboard') — Velinex Cloud</title>
+    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:300,400,500|jetbrains-mono:400,500&display=swap" rel="stylesheet">
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
@@ -15,24 +16,28 @@
 
     {{-- ─── Sidebar ─── --}}
     <aside class="sidebar">
-        <div class="sidebar-brand">
-            <div class="brand-mark">VX</div>
-            <div class="brand-text">
-                <span class="brand-name">Velinex</span>
-                <span class="brand-sub">Cloud</span>
-            </div>
+        <div class="flex items-center bg-transparent border-0" style="padding: 14px 16px 10px; margin: 8px 8px 0;">
+            <img src="{{ asset('logo.svg') }}" alt="Velinex Cloud" style="display:block; width:176px; height:auto;">
         </div>
 
         <nav class="sidebar-nav">
             <span class="nav-section">Mail</span>
 
-            <a href="{{ route('mail.domains.index') }}"
-               class="nav-item {{ request()->routeIs('mail.domains.index') ? 'active' : '' }}">
+            <a href="{{ route('mail.dashboard') }}"
+               class="nav-item {{ request()->routeIs('mail.dashboard') ? 'active' : '' }}">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
                     <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
                     <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
                 </svg>
                 Dashboard
+            </a>
+
+            <a href="{{ route('mail.domains.manage') }}"
+               class="nav-item {{ request()->routeIs('mail.domains.manage') ? 'active' : '' }}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 6h18"/><path d="M3 12h18"/><path d="M3 18h18"/>
+                </svg>
+                Manage Domains
             </a>
 
             <a href="{{ route('mail.domains.create') }}"
@@ -43,7 +48,7 @@
                 Add Domain
             </a>
 
-            @if(request()->routeIs('mail.domains.show'))
+            @if(request()->routeIs('mail.domains.show', 'mail.domains.mailboxes'))
                 <a href="{{ url()->current() }}"
                    class="nav-item active" style="padding-left:28px; font-size:12px;">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
@@ -102,5 +107,6 @@
     </div>
 
 </div>
+@stack('scripts')
 </body>
 </html>

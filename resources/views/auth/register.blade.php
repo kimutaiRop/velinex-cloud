@@ -6,11 +6,7 @@
 <div class="auth-card auth-card-wide">
 
     <div class="auth-brand">
-        <div class="brand-mark">VX</div>
-        <div class="brand-text">
-            <span class="brand-name">Velinex</span>
-            <span class="brand-sub">Cloud</span>
-        </div>
+        <img src="{{ asset('logo.svg') }}" alt="Velinex Cloud" class="brand-mark">
     </div>
 
     <div class="auth-title">Create client account</div>

@@ -39,5 +39,10 @@ class Domain extends Model
     {
         return $this->hasMany(Mailbox::class);
     }
+
+    public function analytics(): HasMany
+    {
+        return $this->hasMany(DomainMailAnalytic::class);
+    }
 }
 

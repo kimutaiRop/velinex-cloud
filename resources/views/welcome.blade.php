@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Velinex Cloud — Web & Email Hosting for Business</title>
+    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
     <meta name="description" content="Enterprise-grade web hosting and business email. Built for reliability, security, and scale.">
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:300,400,500&display=swap" rel="stylesheet">
@@ -58,13 +59,11 @@
             display: flex; align-items: center;
         }
         .nav-inner { display: flex; align-items: center; justify-content: space-between; width: 100%; }
-        .nav-brand { display: flex; align-items: center; gap: 9px; }
+        .nav-brand { display: flex; align-items: center; }
         .nav-logo {
-            width: 27px; height: 27px;
-            background: var(--blue); color: #fff;
-            font-size: 10px; font-weight: 500; letter-spacing: 0.04em;
-            display: flex; align-items: center; justify-content: center;
-            border-radius: 6px;
+            width: 118px;
+            height: auto;
+            display: block;
         }
         .nav-name { font-size: 14px; font-weight: 400; color: var(--text); }
         .nav-name span { color: var(--text-3); font-weight: 300; }
@@ -198,31 +197,40 @@
         .hero-proof-text { font-size: 12px; font-weight: 300; color: var(--text-3); }
         .hero-proof-text strong { font-weight: 400; color: var(--text-2); }
 
-        /* ─── Product mockup ─── */
-        .hero-visual { position: relative; }
+        /* ─── Product mockup — perspective tilt ─── */
+        .hero-visual {
+            position: relative;
+            perspective: 1400px;
+            padding: 24px 30px 30px 0;
+        }
 
         .product-card {
             background: #fff;
             border: 1px solid var(--border-hi);
             border-radius: 12px;
-            box-shadow: var(--shadow-lg);
+            box-shadow: 0 24px 60px rgba(0,0,0,0.11), 0 4px 16px rgba(0,0,0,0.06);
             overflow: hidden;
             position: relative;
+            transform: perspective(1400px) rotateX(6deg) rotateY(-14deg) rotateZ(1deg);
+            transform-origin: center center;
+            transition: transform .6s ease;
+        }
+        .hero-visual:hover .product-card {
+            transform: perspective(1400px) rotateX(3deg) rotateY(-7deg) rotateZ(0.5deg);
         }
 
-        .pc-topbar {
-            display: flex; align-items: center; gap: 10px;
+        .pc-header {
+            display: flex; align-items: center; justify-content: space-between;
             padding: 10px 14px;
             border-bottom: 1px solid var(--border);
             background: var(--bg-2);
         }
-        .pc-dots { display: flex; gap: 5px; }
-        .pc-dot { width: 9px; height: 9px; border-radius: 50%; }
-        .pc-url {
-            flex: 1; background: #fff; border: 1px solid var(--border);
-            border-radius: 4px; padding: 3px 9px;
-            font-size: 10px; font-weight: 300; color: var(--text-3);
-            font-family: 'Courier New', monospace;
+        .pc-header-left { display: flex; align-items: center; gap: 7px; }
+        .pc-header-dot { width: 7px; height: 7px; border-radius: 50%; }
+        .pc-header-title { font-size: 11px; font-weight: 400; color: var(--text-2); }
+        .pc-header-url {
+            font-size: 9.5px; font-weight: 300; color: var(--text-3);
+            font-family: 'Courier New', monospace; letter-spacing: .02em;
         }
 
         .pc-body { padding: 14px; }
@@ -249,17 +257,17 @@
         .pc-badge-amber { background: rgba(245,158,11,.08); color: #d97706; }
         .pc-badge-dot { width: 4px; height: 4px; border-radius: 50%; background: currentColor; }
 
-        /* Floating cards */
+        /* Floating chips — sit outside the tilted card */
         .pc-float-1 {
-            position: absolute; bottom: -18px; right: -22px;
+            position: absolute; bottom: 8px; right: -8px;
             background: #fff; border: 1px solid var(--border-hi);
-            border-radius: 10px; padding: 12px 16px;
+            border-radius: 10px; padding: 10px 14px;
             box-shadow: var(--shadow-md);
             display: flex; align-items: center; gap: 10px;
             white-space: nowrap; z-index: 2;
         }
         .pc-float-2 {
-            position: absolute; top: 28px; left: -24px;
+            position: absolute; top: 14px; left: -8px;
             background: #fff; border: 1px solid var(--border-hi);
             border-radius: 10px; padding: 10px 14px;
             box-shadow: var(--shadow-md);
@@ -610,7 +618,7 @@
         /* ─── Footer ─── */
         .footer { padding: 32px 0; border-top: 1px solid var(--border); }
         .footer-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
-        .footer-brand { display: flex; align-items: center; gap: 8px; }
+        .footer-brand { display: flex; align-items: center; }
         .footer-name { font-size: 13px; font-weight: 300; color: var(--text-2); }
         .footer-copy { font-size: 12px; font-weight: 300; color: var(--text-3); }
         .footer-links { display: flex; gap: 20px; }
@@ -638,15 +646,14 @@
 <nav class="nav">
     <div class="wrap nav-inner">
         <a href="/" class="nav-brand">
-            <div class="nav-logo">VX</div>
-            <span class="nav-name">Velinex <span>Cloud</span></span>
+            <img src="{{ asset('logo.svg') }}" alt="Velinex Cloud" class="nav-logo">
         </a>
         <div class="nav-links">
             <a href="#services" class="nav-link">Services</a>
             <a href="#features" class="nav-link">Features</a>
             <a href="#how" class="nav-link">How it works</a>
             @auth
-                <a href="{{ route('mail.domains.index') }}" class="nav-btn">Dashboard</a>
+                <a href="{{ route('mail.dashboard') }}" class="nav-btn">Dashboard</a>
             @else
                 <a href="{{ route('login') }}" class="nav-login">Sign in</a>
                 <a href="{{ route('auth.register') }}" class="nav-btn">Get started</a>
@@ -697,8 +704,9 @@
                 </div>
             </div>
 
-            <!-- Product mockup -->
+            <!-- Product mockup — perspective tilt -->
             <div class="hero-visual">
+
                 <div class="pc-float-2">
                     <div class="float-icon" style="background:rgba(5,150,105,0.08);color:#059669;">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
@@ -710,13 +718,12 @@
                 </div>
 
                 <div class="product-card">
-                    <div class="pc-topbar">
-                        <div class="pc-dots">
-                            <div class="pc-dot" style="background:#f87171;"></div>
-                            <div class="pc-dot" style="background:#fbbf24;"></div>
-                            <div class="pc-dot" style="background:#34d399;"></div>
+                    <div class="pc-header">
+                        <div class="pc-header-left">
+                            <div class="pc-header-dot" style="background:var(--blue);"></div>
+                            <span class="pc-header-title">Mail Domains</span>
                         </div>
-                        <div class="pc-url">cloud.velinexlabs.com/dashboard/mail</div>
+                        <div class="pc-header-url">cloud.velinexlabs.com</div>
                     </div>
                     <div class="pc-body">
                         <div class="pc-stat-row">
@@ -979,8 +986,7 @@
 <footer class="footer">
     <div class="wrap footer-inner">
         <div class="footer-brand">
-            <div class="nav-logo" style="width:22px;height:22px;font-size:9px;">VX</div>
-            <span class="footer-name">Velinex Cloud</span>
+            <img src="{{ asset('logo.svg') }}" alt="Velinex Cloud" class="nav-logo" style="width:102px;">
         </div>
         <span class="footer-copy">© {{ date('Y') }} Velinex Labs. All rights reserved.</span>
         <div class="footer-links">

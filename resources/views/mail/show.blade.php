@@ -5,7 +5,7 @@
 @section('page-title', 'DNS Setup')
 
 @section('topbar-actions')
-    <a href="{{ route('mail.domains.index') }}" class="btn btn-ghost">
+    <a href="{{ route('mail.domains.manage') }}" class="btn btn-ghost">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
         </svg>
@@ -20,6 +20,7 @@
             Verify DNS
         </button>
     </form>
+    <a href="{{ route('mail.domains.mailboxes', $domain) }}" class="btn btn-primary">Manage Email</a>
 @endsection
 
 @section('content')
@@ -75,10 +76,40 @@
                                 <span class="dns-chip dns-{{ $record->type }}">{{ $record->type }}</span>
                             </td>
                             <td>
-                                <span class="mono" style="font-size: 12px; color: var(--text);">{{ $record->host ?: '@' }}</span>
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <span class="mono copyable-field"
+                                          data-copy-value="{{ $record->host ?: '@' }}"
+                                          title="Double-click to expand"
+                                          style="font-size: 12px; color: var(--text); cursor: pointer;">{{ $record->host ?: '@' }}</span>
+                                    <button type="button"
+                                            class="btn btn-ghost copy-btn copy-btn-icon"
+                                            data-copy-value="{{ $record->host ?: '@' }}"
+                                            aria-label="Copy host"
+                                            title="Copy host">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                        </svg>
+                                    </button>
+                                </div>
                             </td>
                             <td>
-                                <span class="mono-value" title="{{ $record->value }}">{{ $record->value }}</span>
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <span class="mono-value copyable-field"
+                                          data-copy-value="{{ $record->value }}"
+                                          title="{{ $record->value }}&#10;Double-click to expand"
+                                          style="cursor: pointer;">{{ $record->value }}</span>
+                                    <button type="button"
+                                            class="btn btn-ghost copy-btn copy-btn-icon"
+                                            data-copy-value="{{ $record->value }}"
+                                            aria-label="Copy value"
+                                            title="Copy value">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                        </svg>
+                                    </button>
+                                </div>
                             </td>
                             <td class="mono" style="color: var(--text-muted);">{{ $record->priority ?? '—' }}</td>
                             <td class="mono" style="color: var(--text-muted);">{{ $record->ttl }}</td>
@@ -141,113 +172,90 @@
 
     {{-- Mailboxes --}}
     <div class="card">
-        <div class="card-body" style="padding-bottom: 0;">
+        <div class="card-body">
             <div class="section-header">
-                <span class="section-title">Mailboxes</span>
+                <span class="section-title">Domain Operations</span>
                 <span style="font-size: 12px; color: var(--text-muted);">{{ $mailboxes->count() }} accounts</span>
             </div>
+            <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">
+                Mailbox lifecycle management now has a dedicated page for this domain.
+            </p>
+            <div class="action-row">
+                <a href="{{ route('mail.domains.mailboxes', $domain) }}" class="btn btn-primary">Open Email Management</a>
+                <form method="post" action="{{ route('mail.domains.toggle', $domain) }}">
+                    @csrf
+                    <button type="submit" class="btn btn-ghost">{{ $domain->status === 'disabled' ? 'Enable Domain' : 'Disable Domain' }}</button>
+                </form>
+                <form method="post" action="{{ route('mail.domains.destroy', $domain) }}">
+                    @csrf
+                    @method('DELETE')
+                    <input type="hidden" name="force_delete" value="{{ $mailboxes->isNotEmpty() ? 1 : 0 }}">
+                    <button type="submit" class="btn btn-danger-ghost">Delete Domain</button>
+                </form>
+            </div>
         </div>
-
-        @if($domain->status !== 'verified')
-            <div style="padding: 20px; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--warning);">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;flex-shrink:0;">
-                    <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-                </svg>
-                Verify DNS propagation first to enable mailbox provisioning.
-            </div>
-        @else
-            {{-- Create Mailbox Form --}}
-            <form method="post" action="{{ route('mail.mailboxes.store', $domain) }}">
-                @csrf
-                <div class="mailbox-form">
-                    <div class="form-group">
-                        <label class="form-label">Local Part</label>
-                        <div class="email-compose">
-                            <input name="local_part" type="text" placeholder="username" required class="form-input" style="font-family:'DM Mono',monospace; border-radius: 8px 0 0 8px;">
-                            <span class="email-at">@</span>
-                            <span class="email-domain-suffix">{{ $domain->domain }}</span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Display Name</label>
-                        <input name="display_name" type="text" placeholder="Full Name" required class="form-input">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Password</label>
-                        <input name="password" type="password" placeholder="Secure password" required class="form-input">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Quota (MB)</label>
-                        <input name="quota_mb" type="number" min="128" value="1024" required class="form-input">
-                    </div>
-                    <div class="form-group" style="align-self: end;">
-                        <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; height: 38px;">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-                            </svg>
-                            Create
-                        </button>
-                    </div>
-                </div>
-            </form>
-        @endif
-
-        @if($mailboxes->isNotEmpty())
-            <div class="table-wrap">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Email</th>
-                            <th>Quota (MB)</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($mailboxes as $mailbox)
-                            <tr>
-                                <td>
-                                    <span class="mono" style="font-size: 13px; color: var(--text);">{{ $mailbox->email }}</span>
-                                </td>
-                                <td class="mono" style="color: var(--text-muted);">{{ number_format($mailbox->quota_mb) }}</td>
-                                <td>
-                                    @if($mailbox->active)
-                                        <span class="badge badge-active"><span class="badge-dot"></span> active</span>
-                                    @else
-                                        <span class="badge badge-suspended"><span class="badge-dot"></span> suspended</span>
-                                    @endif
-                                </td>
-                                <td>
-                                    <div class="action-row">
-                                        <form method="post" action="{{ route('mail.mailboxes.toggle', $mailbox) }}">
-                                            @csrf
-                                            <button type="submit" class="{{ $mailbox->active ? 'btn btn-danger-ghost' : 'btn btn-ghost' }}">
-                                                {{ $mailbox->active ? 'Suspend' : 'Activate' }}
-                                            </button>
-                                        </form>
-                                        <form method="post" action="{{ route('mail.mailboxes.password', $mailbox) }}" class="inline-password-form">
-                                            @csrf
-                                            <input type="password" name="password" placeholder="New password" required class="form-input" style="width:140px;font-size:12px;padding:5px 10px;border-radius:6px;">
-                                            <button type="submit" class="btn btn-ghost">Update</button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>{{-- close .table-wrap --}}
-        @elseif($domain->status === 'verified')
-            <div class="empty-state" style="border-top: 1px solid var(--border);">
-                <div class="empty-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
-                    </svg>
-                </div>
-                <h3>No mailboxes yet</h3>
-                <p>Use the form above to create the first mailbox for this domain.</p>
-            </div>
-        @endif
     </div>{{-- close .card --}}
 
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const copyButtons = document.querySelectorAll('.copy-btn');
+    const copyableFields = document.querySelectorAll('.copyable-field');
+
+    copyButtons.forEach((button) => {
+        button.addEventListener('click', async () => {
+            const textToCopy = button.getAttribute('data-copy-value') || '';
+            const iconMarkup = button.innerHTML;
+
+            try {
+                await navigator.clipboard.writeText(textToCopy);
+                button.innerHTML = 'Copied';
+            } catch (error) {
+                const fallback = document.createElement('textarea');
+                fallback.value = textToCopy;
+                document.body.appendChild(fallback);
+                fallback.select();
+                document.execCommand('copy');
+                document.body.removeChild(fallback);
+                button.innerHTML = 'Copied';
+            }
+
+            setTimeout(() => {
+                button.innerHTML = iconMarkup;
+            }, 1200);
+        });
+    });
+
+    copyableFields.forEach((field) => {
+        field.addEventListener('dblclick', () => {
+            const value = field.getAttribute('data-copy-value') || field.textContent.trim();
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'copy-expand-input';
+            input.value = value;
+            input.readOnly = true;
+
+            const closeEditor = () => {
+                if (input.parentNode) {
+                    input.parentNode.replaceChild(field, input);
+                }
+            };
+
+            input.addEventListener('blur', closeEditor);
+            input.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape' || event.key === 'Enter') {
+                    event.preventDefault();
+                    closeEditor();
+                }
+            });
+
+            field.parentNode.replaceChild(input, field);
+            input.focus();
+            input.select();
+        });
+    });
+});
+</script>
+@endpush

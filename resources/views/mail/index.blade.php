@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard')
+@section('title', 'Mail Dashboard')
 @section('crumb', 'Mail')
-@section('page-title', 'Domain Dashboard')
+@section('page-title', 'Mail Dashboard')
 
 @section('topbar-actions')
     <a href="{{ route('mail.domains.create') }}" class="btn btn-primary">
@@ -11,6 +11,7 @@
         </svg>
         Add Domain
     </a>
+    <a href="{{ route('mail.domains.manage') }}" class="btn btn-outline">Manage All Domains</a>
 @endsection
 
 @section('content')
@@ -24,8 +25,8 @@
                     <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
                 </svg>
             </div>
-            <div class="stat-value">{{ $domains->count() }}</div>
-            <div class="stat-label">Total Domains</div>
+            <div class="stat-value">{{ $totalDomains }}</div>
+            <div class="stat-label">Total Domains (All)</div>
         </div>
 
         <div class="stat-card" style="--s-accent: var(--success); --s-glow: rgba(0,229,153,0.08);">
@@ -62,11 +63,30 @@
         </div>
     </div>
 
-    {{-- Domains Table --}}
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-value">{{ $analyticsSummary['domains_sent_total'] }}</div>
+            <div class="stat-label">Domain Sent (Total)</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ $analyticsSummary['domains_received_total'] }}</div>
+            <div class="stat-label">Domain Received (Total)</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ $analyticsSummary['mailboxes_sent_total'] }}</div>
+            <div class="stat-label">Mailbox Sent (Total)</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ $analyticsSummary['mailboxes_received_total'] }}</div>
+            <div class="stat-label">Mailbox Received (Total)</div>
+        </div>
+    </div>
+
+    {{-- Recent Domains Table --}}
     <div class="card">
         <div class="card-body" style="padding-bottom: 0;">
             <div class="section-header">
-                <span class="section-title">All Domains</span>
+                <span class="section-title">Recent Domains (Last 5)</span>
             </div>
         </div>
 
@@ -97,6 +117,7 @@
                             <th>DNS Records</th>
                             <th>Mailboxes</th>
                             <th>Added</th>
+                            <th>Analytics</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -121,12 +142,19 @@
                                 <td style="color: var(--text-muted);">{{ $domain->dnsRecords->count() }}</td>
                                 <td style="color: var(--text-muted);">{{ $domain->mailboxes->count() }}</td>
                                 <td style="color: var(--text-muted);" class="mono">{{ $domain->created_at->format('d M Y') }}</td>
+                                <td class="mono" style="color: var(--text-muted);">
+                                    @php $metric = $analyticsByDomain->get($domain->id); @endphp
+                                    {{ (int) ($metric->sent_total ?? 0) }} sent / {{ (int) ($metric->received_total ?? 0) }} recv
+                                </td>
                                 <td>
                                     <a href="{{ route('mail.domains.show', $domain) }}" class="btn btn-outline" style="font-size: 12px; padding: 5px 12px;">
                                         View Setup
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;">
                                             <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
                                         </svg>
+                                    </a>
+                                    <a href="{{ route('mail.domains.mailboxes', $domain) }}" class="btn btn-ghost" style="font-size: 12px; padding: 5px 12px; margin-left: 6px;">
+                                        Manage Email
                                     </a>
                                 </td>
                             </tr>

@@ -4,29 +4,54 @@ namespace App\Http\Controllers;
 
 use App\Models\Client;
 use App\Models\Domain;
+use App\Services\MailAnalyticsService;
 use App\Services\DomainDnsTemplateService;
 use App\Services\DomainDnsVerificationService;
+use App\Services\IredMailService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
+use RuntimeException;
 
 class MailDomainController extends Controller
 {
     public function __construct(
         private readonly DomainDnsTemplateService $dnsTemplateService,
-        private readonly DomainDnsVerificationService $dnsVerificationService
+        private readonly DomainDnsVerificationService $dnsVerificationService,
+        private readonly MailAnalyticsService $mailAnalyticsService,
+        private readonly IredMailService $iredMailService
     ) {}
 
     public function index(): View
     {
         $user = Auth::user();
+        $domains = Domain::with(['client', 'dnsRecords', 'mailboxes'])
+            ->where('client_id', $user->client_id)
+            ->latest('updated_at')
+            ->get();
+
+        $recentDomains = $domains->take(5);
+        $analyticsSummary = $this->mailAnalyticsService->getClientSummary((int) $user->client_id);
+        $analyticsByDomain = $this->mailAnalyticsService->getDomainBreakdown($recentDomains->pluck('id'));
 
         return view('mail.index', [
-            'domains' => Domain::with(['client', 'dnsRecords'])
+            'domains' => $recentDomains,
+            'totalDomains' => $domains->count(),
+            'analyticsSummary' => $analyticsSummary,
+            'analyticsByDomain' => $analyticsByDomain,
+        ]);
+    }
+
+    public function manage(): View
+    {
+        $user = Auth::user();
+
+        return view('mail.domains', [
+            'domains' => Domain::with(['client', 'dnsRecords', 'mailboxes'])
                 ->where('client_id', $user->client_id)
-                ->latest()
+                ->latest('updated_at')
                 ->get(),
         ]);
     }
@@ -45,7 +70,7 @@ class MailDomainController extends Controller
 
         $user = Auth::user();
 
-        $fallbackClientName = $validated['client_name'] ?: $user->name . ' Client';
+        $fallbackClientName = ($validated['client_name'] ?? null) ?: $user->name . ' Client';
         $client = $user->client ?? Client::firstOrCreate(
             ['slug' => Str::slug($fallbackClientName)],
             ['name' => $fallbackClientName]
@@ -86,6 +111,17 @@ class MailDomainController extends Controller
         ]);
     }
 
+    public function mailboxes(Domain $domain): View
+    {
+        abort_if($domain->client_id !== Auth::user()->client_id, 403);
+        $domain->load(['client']);
+
+        return view('mail.mailboxes', [
+            'domain' => $domain,
+            'mailboxes' => $domain->mailboxes()->latest()->get(),
+        ]);
+    }
+
     public function verify(Domain $domain): RedirectResponse
     {
         abort_if($domain->client_id !== Auth::user()->client_id, 403);
@@ -104,6 +140,58 @@ class MailDomainController extends Controller
                 : 'Domain is still pending. Some DNS records are missing or not propagated yet.'
             )
             ->with('verification_results', $verification['records']);
+    }
+
+    public function toggleDomain(Domain $domain): RedirectResponse
+    {
+        abort_if($domain->client_id !== Auth::user()->client_id, 403);
+
+        $targetStatus = $domain->status === 'disabled' ? 'pending' : 'disabled';
+
+        try {
+            $this->iredMailService->setDomainActive($domain->domain, $targetStatus !== 'disabled');
+        } catch (RuntimeException $e) {
+            return back()->with('status', 'iRedMail error: ' . $e->getMessage());
+        }
+
+        $domain->status = $targetStatus;
+        $domain->save();
+
+        return back()->with('status', $targetStatus === 'disabled'
+            ? 'Domain has been disabled.'
+            : 'Domain has been re-enabled.'
+        );
+    }
+
+    public function destroy(Request $request, Domain $domain): RedirectResponse
+    {
+        abort_if($domain->client_id !== Auth::user()->client_id, 403);
+
+        $force = $request->boolean('force_delete');
+        $mailboxes = $domain->mailboxes()->get();
+        if (!$force && $mailboxes->isNotEmpty()) {
+            return back()->withErrors([
+                'domain_delete' => 'This domain has existing mailboxes. Confirm force delete to proceed.',
+            ]);
+        }
+
+        foreach ($mailboxes as $mailbox) {
+            try {
+                $this->iredMailService->deleteMailbox($mailbox->email);
+            } catch (RuntimeException) {
+                // best effort cleanup in iRedMail
+            }
+        }
+
+        try {
+            $this->iredMailService->deleteDomain($domain->domain);
+        } catch (RuntimeException) {
+            // best effort cleanup in iRedMail
+        }
+
+        $domain->delete();
+
+        return redirect()->route('mail.domains.manage')->with('status', 'Domain deleted.');
     }
 }
 
