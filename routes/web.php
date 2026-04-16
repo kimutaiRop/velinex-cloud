@@ -29,9 +29,11 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware(['log.auth', 'auth'])->group(function () {
     Route::get('/dashboard', function () {
-        Log::channel('single')->debug('[DASHBOARD] /dashboard hit — auth passed, redirecting to mail.dashboard', [
+        // Raw log — if this appears, the closure runs (auth passed)
+        Log::channel('single')->debug('[DASHBOARD-CLOSURE] reached /dashboard', [
             'session_id' => session()->getId(),
             'user_id'    => auth()->id(),
+            'all_cookies'=> array_keys(request()->cookies->all()),
         ]);
         return redirect()->route('mail.dashboard');
     })->name('dashboard');
