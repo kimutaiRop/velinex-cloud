@@ -20,7 +20,9 @@
             Verify DNS
         </x-ui.button>
     </form>
-    <x-ui.button variant="primary" href="{{ route('mail.domains.mailboxes', $domain) }}">Manage Email</x-ui.button>
+    @if($domain->status === 'verified')
+        <x-ui.button variant="primary" href="{{ route('mail.domains.mailboxes', $domain) }}">Manage Email</x-ui.button>
+    @endif
 @endsection
 
 @section('content')
@@ -164,7 +166,13 @@
         </x-ui.section-heading>
         <p class="mb-4 text-[13px] text-muted">Mailbox lifecycle management now has a dedicated page for this domain.</p>
         <div class="flex flex-wrap items-center gap-1.5">
-            <x-ui.button variant="primary" href="{{ route('mail.domains.mailboxes', $domain) }}">Open Email Management</x-ui.button>
+            @if($domain->status === 'verified')
+                <x-ui.button variant="primary" href="{{ route('mail.domains.mailboxes', $domain) }}">Open Email Management</x-ui.button>
+            @else
+                <div class="rounded-lg border border-border px-3.5 py-2 text-[12px] text-muted">
+                    Verify DNS to unlock email management.
+                </div>
+            @endif
             <form method="post" action="{{ route('mail.domains.toggle', $domain) }}">
                 @csrf
                 <x-ui.button variant="ghost" type="submit">{{ $domain->status === 'disabled' ? 'Enable Domain' : 'Disable Domain' }}</x-ui.button>
