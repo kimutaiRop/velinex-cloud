@@ -758,7 +758,7 @@
         }
         .feature-pill-featured {
             border-color: rgba(var(--blue-rgb),0.3);
-            background: linear-gradient(180deg, rgba(var(--blue-rgb),0.16) 0%, rgba(var(--blue-rgb),0.09) 100%);
+            background: linear-gradient(180deg, rgba(var(--blue-rgb),0.06) 0%, rgba(var(--blue-rgb),0.03) 100%);
         }
         .feature-gap { min-height: 34px; }
         .plan-check {
