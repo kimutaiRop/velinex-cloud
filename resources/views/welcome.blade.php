@@ -746,7 +746,7 @@
         .feature-pill {
             display: flex; align-items: center; gap: 8px;
             border: 1px solid var(--border);
-            background: #fff;
+            background: linear-gradient(180deg, rgba(var(--blue-rgb),0.06) 0%, rgba(var(--blue-rgb),0.03) 100%);
             border-radius: 999px;
             padding: 6px 10px;
             font-size: 12px;
@@ -758,7 +758,7 @@
         }
         .feature-pill-featured {
             border-color: rgba(var(--blue-rgb),0.3);
-            background: rgba(255,255,255,0.88);
+            background: linear-gradient(180deg, rgba(var(--blue-rgb),0.16) 0%, rgba(var(--blue-rgb),0.09) 100%);
         }
         .feature-gap { min-height: 34px; }
         .plan-check {
